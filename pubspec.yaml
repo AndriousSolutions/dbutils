@@ -14,7 +14,7 @@ dependencies:
       url: git://github.com/Andrious/files.git
 
   # https://pub.dartlang.org/packages/sqflite#-changelog-tab-
-  sqflite: "^0.10.0"
+  sqflite: any
 
 dev_dependencies:
   flutter_test:
