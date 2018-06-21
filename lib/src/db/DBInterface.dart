@@ -63,9 +63,9 @@ abstract class DBInterface {
   Future onDowngrade(Database db, int oldVersion, int newVersion){
     return Future.value();
   }
-  
-  init() {
-    open();
+
+  Future<bool> init() async {
+    return open();
   }
 
   dispose() {
@@ -496,16 +496,17 @@ class _DBInterface {
     return await db.rawQuery("pragma table_info('$table')");
   }
 
-  List<String> _tables = List();
 
-  Future<List<String>> _tableList() async {
+  Future<List<String>> tableList() async {
     
     List<Map> tables = await tableNames();
 
+    List<String> list = List();
+
     for (var i = 1; i < tables.length; i++) {
-      _tables.add(tables[i]['name']);
+      list.add(tables[i]['name']);
     }
-    return _tables;
+    return list;
   }
 
   final Map<String, List> _fields = Map();
@@ -514,7 +515,7 @@ class _DBInterface {
 
   void _tableFields() async {
     
-    var tables = await _tableList();
+    var tables = await tableList();
 
     for (var table in tables) {
       
