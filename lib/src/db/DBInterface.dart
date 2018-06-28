@@ -65,7 +65,13 @@ abstract class DBInterface {
   }
 
   Future<bool> init() async {
-    return open();
+    bool init;
+    try{
+      init = await open();
+    } catch (ex) {
+      init = false;
+    }
+    return init;
   }
 
   dispose() {
