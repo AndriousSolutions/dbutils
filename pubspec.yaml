@@ -11,7 +11,7 @@ dependencies:
   # Files utilities from my library
   file_utils:
     git:
-      url: git://github.com/Andrious/files.git
+      url: git://github.com/AndriousSolutions/files.git
 
   # https://pub.dartlang.org/packages/sqflite#-changelog-tab-
   sqflite: any
