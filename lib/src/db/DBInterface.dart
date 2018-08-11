@@ -64,7 +64,7 @@ abstract class DBInterface {
     return Future.value();
   }
 
-  Future<bool> init() async {
+  Future<bool> init() {
     return open();
   }
 
@@ -73,7 +73,7 @@ abstract class DBInterface {
   }
 
   Future<bool> open() async {
-    var open = await _dbInt._open();
+    var open = await _dbInt.open();
     if(!open){
       _dbError.set(_dbInt.ex);
       // Once recorded, don't keep as it may mislead future calls.
@@ -83,7 +83,7 @@ abstract class DBInterface {
   }
 
   close() {
-    _dbInt._close();
+    _dbInt.close();
   }
 
   /// List of the tables and list their fields: Map<String, List>
@@ -97,6 +97,8 @@ abstract class DBInterface {
 
   /// Gets the exception if any.
   Exception get error => _dbError.e;
+
+  set error(Exception ex) => _dbError.set(ex);
 
   bool get isDatabaseException => _dbError.isDatabaseException;
 
@@ -141,6 +143,18 @@ abstract class DBInterface {
       rec = Map();
     }
     return rec;
+  }
+
+
+  /// Return an 'empty' record map
+  Map newRec(String table, [Map data]){
+    Map newRec = Map();
+
+    newRec.addAll(_dbInt._newRec[table]);
+
+    if(data != null) newRec.addEntries(data.entries);
+
+    return newRec;
   }
 
   Future<List<Map<String, dynamic>>> getRecord(String table, int id) async {
@@ -221,12 +235,14 @@ abstract class DBInterface {
       String orderBy,
       int limit,
       int offset}) async {
-    final cols = columns ?? _dbInt._fields[table];
+
     List<Map<String, dynamic>> recs;
+
     try {
+
       recs = await _dbInt.query(
           table,
-          columns: cols,
+          columns: columns,
           distinct: distinct,
           where: where,
           whereArgs: whereArgs,
@@ -236,8 +252,10 @@ abstract class DBInterface {
           limit: limit,
           offset: offset,
       );
+      
       _dbError.clear();
     } catch (e) {
+
       _dbError.set(e);
       recs = List<Map<String, dynamic>>();
     }
@@ -269,6 +287,19 @@ abstract class DBInterface {
     }
     return rec;
   }
+
+  static Exception _exception;
+
+  static setError(Exception ex){
+    _exception = ex;
+  }
+
+
+  static Exception getError(){
+    var ex = _exception;
+    _exception = Exception();
+    return ex;
+  }
 }
 
 
@@ -288,6 +319,7 @@ class _DBError {
   }
 
   String set(Exception ex){
+    DBInterface.setError(ex);
     e = ex;
     // parameter may be null.
     message = ex?.toString() ?? '';
@@ -367,7 +399,9 @@ class _DBInterface {
 
   Database db;
 
-  Future<bool> _open() async {
+  
+
+  Future<bool> open() async {
     bool opened;
 
     if (db != null) {
@@ -391,7 +425,7 @@ class _DBInterface {
         );
 
         // Create the Map objects containing the table's fields.
-        _tableFields();
+        tableFields();
 
         opened = true;
 
@@ -401,16 +435,20 @@ class _DBInterface {
       }
     }
     return opened;
-}
+  }
 
-  Future<void> _close() async {
+
+
+  Future<void> close() async {
     if (db != null) {
       await db.close();
       db = null;
     }
   }
 
+
   int rowsUpdated;
+
 
   Future<Map> updateRec(String table, Map fields) async {
     rowsUpdated = 0;
@@ -419,35 +457,43 @@ class _DBInterface {
       rowsUpdated = 1;
     } else {
       rowsUpdated = await db.update(table, fields,
-          where: "$keyField = ?", whereArgs: [fields["id"]]);
+          where: "$keyField = ?", whereArgs: [fields[keyField]]);
     }
     return fields;
   }
 
+
+
   Future<List<Map>> getRec(String table, int id, List fields) async {
     if (db == null) {
-      final open = await _open();
+      final open = await this.open();
       if(!open) return Future.value([{}]);
     }
     return await db.query(table,
         columns: fields, where: "$keyField = ?", whereArgs: [id]);
   }
 
+
+
   Future<int> delete(String table, int id) async {
     if (db == null) {
-      final open = await _open();
+      final open = await this.open();
       if(!open) return Future.value(0);
     }
     return await db.delete(table, where: "$keyField = ?", whereArgs: [id]);
   }
 
+
+
   Future<List<Map<String, dynamic>>> rawQuery(String sqlStmt) async {
     if (db == null) {
-      final open = await _open();
+      final open = await this.open();
       if(!open) return Future.value([{}]);
     }
     return await db.rawQuery(sqlStmt);
   }
+
+
 
   Future<List<Map>> query(
       String table,
@@ -462,13 +508,11 @@ class _DBInterface {
       int offset}) async {
 
     if (db == null) {
-      final open = await _open();
+      final open = await this.open();
       if(!open) return Future.value([{}]);
-    }
-    return await db.query(
+      return await db.query(
         table,
         distinct: distinct,
-        columns: columns,
         where: where,
         whereArgs: whereArgs,
         groupBy: groupBy,
@@ -476,25 +520,45 @@ class _DBInterface {
         orderBy: orderBy,
         limit: limit,
         offset: offset,
-    );
+      );
+    }else{
+      final cols = columns == null ? _fields[table] : columns;
+      return await db.query(
+        table,
+        distinct: distinct,
+        columns: cols,
+        where: where,
+        whereArgs: whereArgs,
+        groupBy: groupBy,
+        having: having,
+        orderBy: orderBy,
+        limit: limit,
+        offset: offset,
+      );
+    }
   }
+
+
 
   Future<List<Map>> tableNames() async {
     if (db == null) {
-      final open = await _open();
+      final open = await this.open();
       if(!open) return Future.value([{}]);
     }
     return await db
         .rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
   }
 
+
+
   Future<List<Map>> tableColumns(String table) async {
     if (db == null) {
-      final open = await _open();
+      final open = await this.open();
       if(!open) return Future.value([{}]);
     }
     return await db.rawQuery("pragma table_info('$table')");
   }
+
 
 
   Future<List<String>> tableList() async {
@@ -513,8 +577,11 @@ class _DBInterface {
 
   final Map<String, Map> _fldValues = Map();
 
-  void _tableFields() async {
-    
+  final Map<String, Map> _newRec = Map();
+
+
+  void tableFields() async {
+
     var tables = await tableList();
 
     for (var table in tables) {
@@ -523,20 +590,36 @@ class _DBInterface {
 
       List<String> fields = List();
 
+      fields.add(keyField);
+
       Map<String, dynamic> fieldValues = Map();
+
+      fieldValues[keyField] = null;
 
       for (var col in columns) {
 
-        fields.add(col['name']);
-        /// Record the name of the primary key field.
-        if (col['pk'] == 1) keyField = col['name'];
+        /// Replace the primary key field.
+        if (col['pk'] == 1 && keyField == col['name']){
+          
+          fieldValues.remove(keyField);
+          keyField = col['name'];
+          fieldValues[keyField] = null;
+          fields.first = keyField;
+        }else{
 
-        fieldValues[col['name']] = null;
+          fields.add(col['name']);
+          fieldValues[col['name']] = null;
+        }
       }
 
       _fields[table] = fields;
 
       _fldValues[table] = fieldValues;
+
+      _newRec[table] = Map();
+
+      /// Make a copy as an 'empty' record.
+      _newRec[table].addEntries(_fldValues[table].entries);
     }
   }
 }
