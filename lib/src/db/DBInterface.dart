@@ -25,6 +25,8 @@ import 'package:path/path.dart';
 
 import 'package:file_utils/files.dart';
 
+import 'package:flutter/foundation.dart' show mustCallSuper;
+
 
 abstract class DBInterface {
   DBInterface()
@@ -64,10 +66,12 @@ abstract class DBInterface {
     return Future.value();
   }
 
+  @mustCallSuper
   Future<bool> init() {
     return open();
   }
 
+  @mustCallSuper
   dispose() {
     close();
   }
@@ -94,6 +98,9 @@ abstract class DBInterface {
 
   /// Gets the Database
   Database get db => _dbInt.db;
+
+  /// Key field
+  String get keyField => _dbInt.keyField;
 
   /// Gets the exception if any.
   Exception get error => _dbError.e;
