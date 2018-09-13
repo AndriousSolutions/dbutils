@@ -96,6 +96,8 @@ abstract class DBInterface {
   /// List of the table and a map of each of their field values: Map<String, Map>
   Map<String, Map> get values => _dbInt._fldValues;
 
+  Map<String, Map> get newrec => _dbInt._newRec;
+
   /// Gets the Database
   Database get db => _dbInt.db;
 
@@ -615,7 +617,20 @@ class _DBInterface {
         }else{
 
           fields.add(col['name']);
-          fieldValues[col['name']] = null;
+
+          if(col['dflt_value'] != null){
+
+            fieldValues[col['name']] = col['dflt_value'];
+          }else {
+
+            if(col['notnull'] == 1){
+
+               //TODO Determine the default by datatype.
+            }else{
+              
+               fieldValues[col['name']] = null;
+            }
+          }
         }
       }
 
