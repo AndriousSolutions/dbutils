@@ -1,20 +1,21 @@
 name: dbutils
 description: Database Utilities Library
-version: 0.0.1
-author:
-homepage:
+version: 0.1.1
+author: Greg Perry
+homepage: andrioussolutions.com
+
+environment:
+  sdk: ">=2.0.0 <5.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  # Files utilities from my library
-  file_utils:
-    git:
-      url: git://github.com/AndriousSolutions/files.git
-
   # https://pub.dartlang.org/packages/sqflite#-changelog-tab-
-  sqflite: any
+  sqflite:
+
+  # https://pub.dartlang.org/packages/path_provider#-changelog-tab-
+  path_provider:
 
 dev_dependencies:
   flutter_test:
