@@ -4,7 +4,9 @@
 
 I’ve taken Raja Jawahar’s sample app from his article, [SQFlite Database in flutter](https://medium.com/@mohamedraja_77/sqflite-database-in-flutter-c0b7be83bcd2), to help introduce a class library I’ve written to make it easier to work a SQLite database. Like Raja Jawahar, I’m using the SQFlite plugin for Flutter, **sqflite**. To follow along, you can get copies of the Dart files that make up the sample app at the gist, [SQFlite Database in Flutter Example](https://gist.github.com/Andrious/feb05d140fbed5f98945ea706edab137). You then copy the last three lines listed below and place them in your own *pubspec.yaml* file. You’re then on your way to working with SQFlite in your Flutter app.
 ![dbutilsgit](https://user-images.githubusercontent.com/32497443/48977106-fce28e00-f061-11e8-8551-a270ab54f39f.png)
+
 Better still, download the Dart file, [dbutils.dart](https://github.com/AndriousSolutions/dbutils/blob/master/lib/sqllitedb.dart), as there's no guarantee that this repo., [dbutils.git](https://github.com/AndriousSolutions/dbutils), will last forever.
+
 ![apache](https://user-images.githubusercontent.com/32497443/48979991-06cfb580-f091-11e8-8bb6-cd723155fb50.png)
 ![sqlitedbutils](https://user-images.githubusercontent.com/32497443/48977150-cfe2ab00-f062-11e8-9e84-483ca902df98.png)
 ### What's on the Table?
