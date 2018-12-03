@@ -29,12 +29,13 @@ In the sample app, you click in a button labelled, Login, to save the employee i
 ![06submit](https://user-images.githubusercontent.com/32497443/48977258-2224cb80-f065-11e8-94de-48f83e018bb6.png) 
 ### Let's See Your Saves
 The sample app has a 'hamburger button' in the upper right-hand corner of its screen. Clicking on that button will, as I've mentioned earlier, produce the list of employees you've entered so far. Below, is the code responsible to displaying that list. A query of the 'Employee' data table is performed, and when there's data, the first name and last name of each employee is listed out. 
+
 ![07saveemployees](https://user-images.githubusercontent.com/32497443/48977271-484a6b80-f065-11e8-9b46-8edf5bf0cd5b.png)
 ![08myemployeelist](https://user-images.githubusercontent.com/32497443/48977281-67e19400-f065-11e8-941e-709a15054762.png)
 ```sh
 ``` 
 ### Let's See the Interface:
-Again, you see the employee class in the Dart file, employee.dart, extends the class, _DBInterface_. This is the class library I've written to, in turn, work with the SQFlite plugin, **sqflite**. In review, typically this is how to use this class library: Create a class that extends the class, _DBInterface_, defines the table it represents and the name of the database (and database version number) that will contain it. There you have it! The rest of this article will take a walk through this class library.
+Again, you see the employee class in the Dart file, _employee.dart_, extends the class, _DBInterface_. This is the class library I've written to, in turn, work with the SQFlite plugin, **sqflite**. In review, typically this is how to use this class library: Create a class that extends the class, _DBInterface_, defines the table it represents and the name of the database (and database version number) that will contain it. There you have it! The rest of this article will take a walk through this class library.
 ### On Five Occasions
 At most, you have five functions that you can override when using this class library. Each to handle five different events: _onCreate, onConfigure, onOpen, onUpgrade, onDowngrade_
 
