@@ -291,7 +291,8 @@ abstract class DBInterface {
 
   static Exception _exception;
 
-  static setError(Exception ex) {
+  static setError(Object ex) {
+    if(ex is! Exception) ex = Exception(ex.toString());
     _exception = ex;
   }
 
