@@ -17,6 +17,9 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 ///
+///          Created  14 May 2018
+///
+/// Github: https://github.com/AndriousSolutions/dbutils
 ///
 import 'dart:async' show Future;
 
