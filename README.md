@@ -99,6 +99,7 @@ Finally, at the end of the class library is the function, **_tableList()**. It i
 
 ##### The Medium Article:
 [![sqlite](https://user-images.githubusercontent.com/32497443/49753883-ac367c00-fc82-11e8-8c04-3e2f56e8855c.png)](https://medium.com/@greg.perry/flutter-and-sqlite-f72878bc5859)
+
 # DECODE Flutter
 ##### Live Streaming every week. Everything to do about Flutter. 
 [![twitch](https://user-images.githubusercontent.com/32497443/49753449-7349d780-fc81-11e8-9d08-89146a6731c8.png)
