@@ -29,13 +29,12 @@ In the sample app, you click in a button labelled, Login, to save the employee i
 ![06submit](https://user-images.githubusercontent.com/32497443/48977258-2224cb80-f065-11e8-94de-48f83e018bb6.png) 
 ### Let's See Your Saves
 The sample app has a 'hamburger button' in the upper right-hand corner of its screen. Clicking on that button will, as I've mentioned earlier, produce the list of employees you've entered so far. Below, is the code responsible to displaying that list. A query of the 'Employee' data table is performed, and when there's data, the first name and last name of each employee is listed out. 
-
 ![07saveemployees](https://user-images.githubusercontent.com/32497443/48977271-484a6b80-f065-11e8-9b46-8edf5bf0cd5b.png)
 ![08myemployeelist](https://user-images.githubusercontent.com/32497443/48977281-67e19400-f065-11e8-941e-709a15054762.png)
 ```sh
 ``` 
 ### Let's See the Interface:
-Again, you see the employee class in the Dart file, _employee.dart_, extends the class, _DBInterface_. This is the class library I've written to, in turn, work with the SQFlite plugin, **sqflite**. In review, typically this is how to use this class library: Create a class that extends the class, _DBInterface_, defines the table it represents and the name of the database (and database version number) that will contain it. There you have it! The rest of this article will take a walk through this class library.
+Again, you see the employee class in the Dart file, employee.dart, extends the class, _DBInterface_. This is the class library I've written to, in turn, work with the SQFlite plugin, **sqflite**. In review, typically this is how to use this class library: Create a class that extends the class, _DBInterface_, defines the table it represents and the name of the database (and database version number) that will contain it. There you have it! The rest of this article will take a walk through this class library.
 ### On Five Occasions
 At most, you have five functions that you can override when using this class library. Each to handle five different events: _onCreate, onConfigure, onOpen, onUpgrade, onDowngrade_
 
@@ -98,4 +97,9 @@ These next two functions are primarily used by the function, **_tableList()**. I
 Finally, at the end of the class library is the function, **_tableList()**. It is called when the database is opened in the function, **_open()**. It is this function that fills the two Map objects, *_fields* and *_fldValues*, with the names of all the fields of all the tables contained in the database.
 ![26list](https://user-images.githubusercontent.com/32497443/48979812-17326100-f08e-11e8-8ed5-74df1be693d6.png)
 
-[→ Other Articles by Greg Perry](https://medium.com/@greg.perry)
+##### The Medium Article:
+[![sqlite](https://user-images.githubusercontent.com/32497443/49753883-ac367c00-fc82-11e8-8c04-3e2f56e8855c.png)](https://medium.com/@greg.perry/flutter-and-sqlite-f72878bc5859)
+# DECODE Flutter
+##### Live Streaming every week. Everything to do about Flutter. 
+[![twitch](https://user-images.githubusercontent.com/32497443/49753449-7349d780-fc81-11e8-9d08-89146a6731c8.png)
+](https://medium.com/@greg.perry/decode-flutter-6b60a3199e83)
