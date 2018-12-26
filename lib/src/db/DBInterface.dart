@@ -31,6 +31,9 @@ import 'package:path_provider/path_provider.dart' show getApplicationDocumentsDi
 
 import 'package:flutter/foundation.dart' show mustCallSuper;
 
+/// Signature of callbacks that have no arguments and return no data.
+typedef Func = Function();
+
 abstract class DBInterface {
   DBInterface() : _dbError = _DBError() {
     _dbInt = _DBInterface(
@@ -80,8 +83,9 @@ abstract class DBInterface {
     return open();
   }
 
+  // Leave 'dispose' to subclasses. gp
   @mustCallSuper
-  dispose() {
+  void disposed() {
     close();
   }
 
@@ -144,8 +148,36 @@ abstract class DBInterface {
   /// How many records were last updated.
   int get recsUpdated => _dbInt.rowsUpdated;
 
+  Map addEntries(String table, Map values){
+    if(values == null) return {};
+    Map fldValues = _dbInt._fldValues[table];
+    if(fldValues == null) return {};
+    for(String key in values.keys){
+      if(!fldValues.containsKey(key)) continue;
+      fldValues[key] = values[key];
+    }
+    return fldValues;
+  }
+
   Future<Map> saveRec(String table) async {
     return updateRec(table, _dbInt._fldValues[table]);
+  }
+
+  Future<bool> saveMap(String table, Map values) async{
+    if(table == null || table.isEmpty) Future.value(false);
+    Map rec = newRec(table, values);
+    addEntries(table, rec);
+    rec = await saveRec(table);
+    return rec.isNotEmpty;
+  }
+
+  Future<bool> runTxn(Func func) async {
+    var dbClient = db;
+    var ret = await dbClient.transaction((txn) async {
+      final bool result = await func();
+      return Future.value(result);
+    });
+    return ret;
   }
 
   Future<Map> updateRec(String table, Map fields) async {
@@ -204,6 +236,8 @@ abstract class DBInterface {
     List<Map<String, dynamic>> recs;
     try {
       recs = await _dbInt.rawQuery(sqlStmt);
+      // Convert the QueryResultSet to a Map
+      recs = mapQuery(recs);
       _dbError.clear();
     } catch (e) {
       _dbError.set(e);
@@ -259,13 +293,23 @@ abstract class DBInterface {
         limit: limit,
         offset: offset,
       );
-
+      // Convert the QueryResultSet to a Map
+      recs = mapQuery(recs);
       _dbError.clear();
     } catch (e) {
       _dbError.set(e);
       recs = List<Map<String, dynamic>>();
     }
     return recs;
+  }
+
+  List<Map<String, dynamic>> mapQuery(List<Map<String, dynamic>> query){
+    List<Map<String, dynamic>> mapList = [];
+    for(var row in query){
+      Map<String, dynamic> map = row.map((key, value) => MapEntry(key, value));
+      mapList.add(map);
+    }
+    return mapList;
   }
 
   Future<List<Map>> tableNames() async {
@@ -571,7 +615,7 @@ class _DBInterface {
 
       for (var col in columns) {
         /// Replace the primary key field.
-        if (col['pk'] == 1 && keyField == col['name']) {
+        if (col['pk'] == 1 && keyField != col['name']) {
           fieldValues.remove(keyField);
           keyField = col['name'];
           fieldValues[keyField] = null;
