@@ -78,7 +78,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    db.dispose();
+    db.disposed();
     super.dispose();
   }
 
