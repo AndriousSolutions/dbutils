@@ -12,10 +12,12 @@ dependencies:
     sdk: flutter
 
   # https://pub.dartlang.org/packages/sqflite#-changelog-tab-
-  sqflite:
+  # Before Android Support Library to AndroidX
+  sqflite: 1.0.0
 
   # https://pub.dartlang.org/packages/path_provider#-changelog-tab-
-  path_provider:
+  # Before Android Support Library to AndroidX
+  path_provider: 0.4.1
 
 dev_dependencies:
   flutter_test:

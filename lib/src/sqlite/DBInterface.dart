@@ -99,9 +99,7 @@ abstract class DBInterface {
     return open;
   }
 
-  close() {
-    _dbInt.close();
-  }
+  close() => _dbInt.close();
 
   /// List of the tables and list their fields: Map<String, List>
   Map<String, List> get fields => _dbInt._fields;
@@ -478,11 +476,12 @@ class _DBInterface {
     return opened;
   }
 
-  Future<void> close() async {
-    if (db != null) {
-      await db.close();
-      db = null;
-    }
+  void close() {
+    var temp = db;
+    /// Hot reload must have db close & set to null first.
+    db = null;
+    /// Don't provide the 'await' command as the process MUST wait.
+    temp?.close();
   }
 
   int rowsUpdated;
