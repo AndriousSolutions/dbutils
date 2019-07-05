@@ -23,9 +23,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'employee.dart';
-import 'employeelist.dart';
-import 'dbutils_example.dart';
+import '../example/employee.dart';
+import '../example/employeelist.dart';
+import '../example/main.dart';
 
 void main() {
   testWidgets('Counter App Test', (WidgetTester tester) async {

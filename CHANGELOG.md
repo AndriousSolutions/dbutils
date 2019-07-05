@@ -1,3 +1,8 @@
+## 0.3.0
+ July 05, 2019
+- keyField(String table) in DBInterface
+- Includes a working example
+
 ## 0.2.1
  Apr 23, 2019
 - Allow for Hot Reload with temp?.close();
