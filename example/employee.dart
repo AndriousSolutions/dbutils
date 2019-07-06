@@ -64,7 +64,9 @@ class Employee extends DBInterface {
     return init;
   }
 
-  void save() => saveRec('Employee', values);
+  void save([Map<String, dynamic> employee]) => saveRec('Employee', employee ?? values);
+
+  void deleteRec([Map<String, dynamic> employee]) => delete('Employee', employee['id'] ?? values['id']);
 
   Future<List<Map<String, dynamic>>> getEmployees() async {
     List<Map<String, dynamic>> rec =
@@ -76,4 +78,6 @@ class Employee extends DBInterface {
     }
     return rec;
   }
+
+  Map<String, dynamic> emptyRec() => newRec('Employee');
 }

@@ -21,14 +21,11 @@
 ///
 import 'dart:async' show Future;
 
-import 'package:flutter/material.dart' show AppBar, BuildContext, Colors, Column, Container, EdgeInsets, FlutterError, FlutterErrorDetails, Form, FormState, GlobalKey, Icon, IconButton, Icons, InputDecoration, Key, MaterialApp, MaterialPageRoute, Navigator, Padding, RaisedButton, Scaffold, ScaffoldState, SnackBar, State, StatefulWidget, StatelessWidget, Text, TextFormField, TextInputType, ThemeData, Widget, runApp;
+import 'package:flutter/material.dart';
 
-import 'employee.dart' show Employee;
+import 'employeelist.dart';
 
-import 'employeelist.dart' show MyEmployeeList;
-
-
-void main(){
+void main() {
   /// The default is to dump the error to the console.
   /// Instead, a custom function is called.
   FlutterError.onError = (FlutterErrorDetails details) async {
@@ -38,7 +35,6 @@ void main(){
 }
 
 class MyApp extends StatelessWidget {
-
   const MyApp({this.key});
   final Key key;
 
@@ -50,126 +46,27 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(key: key, title: 'Flutter Demo Home Page'),
+      home: MyHomePage(key: key),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
+  MyHomePage({this.key}) : super();
+  final Key key;
   final MyHomePageState state = MyHomePageState();
   @override
   MyHomePageState createState() => state;
 }
 
 class MyHomePageState extends State<MyHomePage> {
-
-  Employee db = Employee();
-
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-  final formKey = GlobalKey<FormState>();
-
   @override
-  initState(){
-    super.initState();
-    db.init();
-  }
-
-  @override
-  void dispose() {
-    db.disposed();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: AppBar(
-          title: Text('Saving Employee'),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.view_list),
-              tooltip: 'Next choice',
-              onPressed: () {
-                navigateToEmployeeList();
-              },
-            ),
-          ]
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(labelText: 'First Name'),
-                validator: (val) =>
-                val.length == 0 ?"Enter FirstName" : null,
-                onSaved: (val) => db.values['firstname'] = val,
-              ),
-              TextFormField(
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(labelText: 'Last Name'),
-                validator: (val) =>
-                val.length ==0 ? 'Enter LastName' : null,
-                onSaved: (val) => db.values['lastname'] = val,
-              ),
-              TextFormField(
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(labelText: 'Mobile No'),
-                validator: (val) =>
-                val.length ==0 ? 'Enter Mobile No' : null,
-                onSaved: (val) => db.values['mobileno'] = val,
-              ),
-              TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(labelText: 'Email Id'),
-                validator: (val) =>
-                val.length ==0 ? 'Enter Email Id' : null,
-                onSaved: (val) =>db.values['emailId'] = val,
-              ),
-              Container(margin: const EdgeInsets.only(top: 10.0),child: RaisedButton(onPressed: _submit,
-                child: Text('Save'),),)
-
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _submit() {
-    if (this.formKey.currentState.validate()) {
-      formKey.currentState.save();
-    }else{
-      return null;
-    }
-
-    db.save();
-    _showSnackBar("Data saved successfully");
-  }
-
-  void _showSnackBar(String text) {
-    scaffoldKey.currentState
-        .showSnackBar(SnackBar(content: Text(text)));
-  }
-
-  void navigateToEmployeeList(){
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyEmployeeList()),
-    );
-  }
+  Widget build(BuildContext context) => MyEmployeeList(key: widget.key);
 }
-
 
 /// Reports [error] along with its [stackTrace]
 Future<Null> _reportError(FlutterErrorDetails details) async {
-  // details.exception, details.stack
-
+  /// Turn to details.exception, details.stack
   FlutterError.dumpErrorToConsole(details);
 }

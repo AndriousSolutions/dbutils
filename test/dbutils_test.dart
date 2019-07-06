@@ -36,13 +36,11 @@ void main() {
     await tester.pumpWidget(MyApp(key: key));
 
     /// You can directly access the 'internal workings' of the app!
-    MyHomePage _statefulWidget = tester.widget(find.byKey(key));
+    MyEmployeeList _statefulWidget = tester.widget(find.byKey(key));
 
     /// Reference to the Controller.
-    MyHomePageState _state = _statefulWidget.state;
+    MyEmployeeListPageState _state = _statefulWidget.state;
 
     Employee _db = _state.db;
-
-
   });
 }

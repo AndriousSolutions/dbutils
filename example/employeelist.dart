@@ -21,53 +21,79 @@
 ///
 import 'dart:async' show Future;
 
-import 'package:flutter/material.dart' show AlignmentDirectional, AppBar, BuildContext, CircularProgressIndicator, Column, Container, CrossAxisAlignment, Divider, EdgeInsets, FontWeight, FutureBuilder, ListView, Scaffold, State, StatefulWidget, Text, TextStyle, Widget;
+import 'package:flutter/material.dart';
 
 import 'employee.dart' show Employee;
 
-//Future<List<Map<String, dynamic>>>
-Future<List<Map<String, dynamic>>> fetchEmployeesFromDatabase() => Employee().getEmployees();
+import 'employeedetail.dart';
 
 class MyEmployeeList extends StatefulWidget {
+  MyEmployeeList({Key key}) : super(key: key);
+  final MyEmployeeListPageState state = MyEmployeeListPageState();
   @override
-  MyEmployeeListPageState createState() => new MyEmployeeListPageState();
+  MyEmployeeListPageState createState() => state;
 }
 
 class MyEmployeeListPageState extends State<MyEmployeeList> {
+  Employee db;
+  @override
+  void initState() {
+    super.initState();
+    db = Employee();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Employee List'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Employee List'),
       ),
-      body: new Container(
-        padding: new EdgeInsets.all(16.0),
-        child: new FutureBuilder<List<Map<String, dynamic>>>(
-          future: fetchEmployeesFromDatabase(),
+      body: Container(
+        padding: EdgeInsets.all(16.0),
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: db.getEmployees(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return new ListView.builder(
+              return ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
-                    return new Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          new Text(snapshot.data[index]['firstname'],
-                              style: new TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18.0)),
-                          new Text(snapshot.data[index]['lastname'],
-                              style: new TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 14.0)),
-                          new Divider()
-                        ]);
+                    return InkWell(
+                        onTap: Feedback.wrapForTap(
+                            () => Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => MyEmployee(
+                                    employee: snapshot.data[index]))),
+                            context),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(snapshot.data[index]['firstname'],
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0)),
+                              Text(snapshot.data[index]['lastname'],
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0)),
+                              Divider()
+                            ]));
                   });
             } else if (snapshot.hasError) {
-              return new Text("${snapshot.error}");
+              return Text("${snapshot.error}");
             }
-            return new Container(alignment: AlignmentDirectional.center,child: new CircularProgressIndicator(),);
+            return Container(
+              alignment: AlignmentDirectional.center,
+              child: CircularProgressIndicator(),
+            );
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    MyEmployee(employee: db.emptyRec())));
+          }),
     );
   }
 }
