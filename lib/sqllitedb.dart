@@ -1,3 +1,3 @@
-library sqllite_db;
+library dbutils;
 
 export 'src/sqlite/DBInterface.dart';

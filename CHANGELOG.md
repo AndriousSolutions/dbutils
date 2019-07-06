@@ -1,3 +1,8 @@
+## 0.3.1
+ July 06, 2019
+- library sqllite_db; to library dbutils; 
+- Update pubspec.yaml info.
+
 ## 0.3.0
  July 05, 2019
 - keyField(String table) in DBInterface

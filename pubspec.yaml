@@ -1,8 +1,9 @@
 name: dbutils
 description: Database Utilities Library
-version: 0.3.0
-author: Greg Perry
-homepage: andrioussolutions.com
+version: 0.3.1
+author: Greg Perry <support@andrioussolutions.com>
+homepage: https://medium.com/p/2ef1ef87e5af
+repository: https://github.com/AndriousSolutions/dbutils
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
