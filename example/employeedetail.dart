@@ -40,20 +40,17 @@ class MyEmployeeState extends State<MyEmployee> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-          title: Text('Employee'),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.delete),
-              tooltip: 'Next choice',
-              onPressed: () {
-                Employee().deleteRec(widget.employee);
-                Navigator.of(context).pop();
-              },
-            ),
-          ]
-      ),
-     resizeToAvoidBottomInset: false,
+      appBar: AppBar(title: Text('Employee'), actions: <Widget>[
+        IconButton(
+          icon: const Icon(Icons.delete),
+          tooltip: 'Next choice',
+          onPressed: () {
+            Employee().deleteRec(widget.employee);
+            Navigator.of(context).pop();
+          },
+        ),
+      ]),
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -61,35 +58,42 @@ class MyEmployeeState extends State<MyEmployee> {
           child: Column(
             children: [
               TextFormField(
-                controller: TextEditingController(text: widget.employee['firstname']),
+                controller:
+                    TextEditingController(text: widget.employee['firstname']),
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(labelText: 'First Name'),
-                validator: (val) =>
-                val.length == 0 ?"Enter FirstName" : null,
+                validator: (val) => val.length == 0 ? "Enter FirstName" : null,
                 onSaved: (val) => widget.employee['firstname'] = val,
               ),
               TextFormField(
-                controller: TextEditingController(text: widget.employee['lastname']),
+                controller:
+                    TextEditingController(text: widget.employee['lastname']),
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(labelText: 'Last Name'),
-                validator: (val) =>
-                val.length == 0 ? 'Enter LastName' : null,
+                validator: (val) => val.length == 0 ? 'Enter LastName' : null,
                 onSaved: (val) => widget.employee['lastname'] = val,
               ),
               TextFormField(
-                controller: TextEditingController(text: widget.employee['mobileno']),
+                controller:
+                    TextEditingController(text: widget.employee['mobileno']),
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(labelText: 'Mobile No'),
                 onSaved: (val) => widget.employee['mobileno'] = val,
               ),
               TextFormField(
-                controller: TextEditingController(text: widget.employee['emailId']),
+                controller:
+                    TextEditingController(text: widget.employee['emailId']),
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(labelText: 'Email Id'),
                 onSaved: (val) => widget.employee['emailId'] = val,
               ),
-              Container(margin: const EdgeInsets.only(top: 10.0),child: RaisedButton(onPressed: _submit,
-                child: Text('Save'),),)
+              Container(
+                margin: const EdgeInsets.only(top: 10.0),
+                child: RaisedButton(
+                  onPressed: _submit,
+                  child: Text('Save'),
+                ),
+              )
             ],
           ),
         ),
@@ -100,16 +104,18 @@ class MyEmployeeState extends State<MyEmployee> {
   void _submit() {
     if (this.formKey.currentState.validate()) {
       formKey.currentState.save();
-    }else{
+    } else {
       return null;
     }
-    Employee().save(widget.employee);
-    _showSnackBar("Data saved successfully");
-    Navigator.of(context).pop();
+    Employee().save(widget.employee).then((save) {
+      if (save) {
+        _showSnackBar("Data saved successfully");
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   void _showSnackBar(String text) {
-    scaffoldKey.currentState
-        .showSnackBar(SnackBar(content: Text(text)));
+    scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(text)));
   }
 }
