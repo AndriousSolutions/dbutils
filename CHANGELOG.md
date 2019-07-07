@@ -1,3 +1,10 @@
+## 0.3.2
+ July 07, 2019
+- employee.dart Future<bool> save()
+- employeedetail.dart  Employee().save(widget.employee).then((
+- employeelist.dart  dispose()
+- DBInterface.dart  Future<void> onCreate()
+
 ## 0.3.1
  July 06, 2019
 - library sqllite_db; to library dbutils; 
