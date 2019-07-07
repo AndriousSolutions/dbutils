@@ -60,13 +60,17 @@ class Employee extends DBInterface {
   @override
   Future<bool> init() async {
     bool init = await super.init();
-    getEmployees();
+    if(init) getEmployees();
     return init;
   }
 
-  void save([Map<String, dynamic> employee]) => saveRec('Employee', employee ?? values);
+  Future<bool> save([Map<String, dynamic> employee]) async {
+    Map<String, dynamic> rec = await saveRec('Employee', employee ?? values);
+    return rec.isNotEmpty;
+  }
 
-  void deleteRec([Map<String, dynamic> employee]) => delete('Employee', employee['id'] ?? values['id']);
+  void deleteRec([Map<String, dynamic> employee]) =>
+      delete('Employee', employee['id'] ?? values['id']);
 
   Future<List<Map<String, dynamic>>> getEmployees() async {
     List<Map<String, dynamic>> rec =
