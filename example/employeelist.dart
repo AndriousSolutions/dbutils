@@ -38,6 +38,13 @@ class MyEmployeeListPageState extends State<MyEmployeeList> {
   void initState() {
     super.initState();
     db = Employee();
+//    db.init();
+  }
+
+  @override
+  void dispose(){
+    db.disposed();
+    super.dispose();
   }
 
   @override
