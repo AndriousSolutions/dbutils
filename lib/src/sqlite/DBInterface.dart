@@ -67,25 +67,25 @@ abstract class DBInterface {
   int get version;
 
   /// abstract method needed to be subclassed.
-  Future onCreate(Database db, int version);
+  Future<void> onCreate(Database db, int version);
 
   /// Configure before upgrading or downgrading or after deletedowngrade
-  Future onConfigure(Database db) {
+  Future<void> onConfigure(Database db) {
     return Future.value();
   }
 
   /// After opening, upgrading or downgrading.
-  Future onOpen(Database db) {
+  Future<void> onOpen(Database db) {
     return Future.value();
   }
 
   /// Upgrade to a higher version.
-  Future onUpgrade(Database db, int oldVersion, int newVersion) {
+  Future<void> onUpgrade(Database db, int oldVersion, int newVersion) {
     return Future.value();
   }
 
   /// Downgrade to a lower version.
-  Future onDowngrade(Database db, int oldVersion, int newVersion) {
+  Future<void> onDowngrade(Database db, int oldVersion, int newVersion) {
     return Future.value();
   }
 
@@ -94,7 +94,7 @@ abstract class DBInterface {
     return open();
   }
 
-  // Leave 'dispose' to subclasses. gp
+  // Leave the word 'dispose' to subclasses. gp
   @mustCallSuper
   void disposed() {
     close();
@@ -189,7 +189,7 @@ abstract class DBInterface {
       _dbError.clear();
     } catch (e) {
       _dbError.set(e);
-      rec = Map<String, dynamic>();
+      rec = Map();
     }
     return rec;
   }
@@ -672,8 +672,6 @@ class _DBInterface {
       }
 
       _fields[table] = fields;
-
-//      _fldValues[table] = fieldValues;
 
       _newRec[table] = Map<String, dynamic>();
 
