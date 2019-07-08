@@ -60,7 +60,7 @@ class Employee extends DBInterface {
   @override
   Future<bool> init() async {
     bool init = await super.init();
-    if(init) getEmployees();
+    if (init) getEmployees();
     return init;
   }
 

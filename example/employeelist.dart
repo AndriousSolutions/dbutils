@@ -42,7 +42,7 @@ class MyEmployeeListPageState extends State<MyEmployeeList> {
   }
 
   @override
-  void dispose(){
+  void dispose() {
     db.disposed();
     super.dispose();
   }

@@ -1,3 +1,8 @@
+## 0.3.3
+- updated README.md file
+- updated pubspec.yaml description
+- formatted source code
+
 ## 0.3.2
  July 07, 2019
 - employee.dart Future<bool> save()
