@@ -43,7 +43,7 @@ class MyEmployeeState extends State<MyEmployee> {
       appBar: AppBar(title: Text('Employee'), actions: <Widget>[
         IconButton(
           icon: const Icon(Icons.delete),
-          tooltip: 'Next choice',
+          tooltip: 'Delete employee',
           onPressed: () {
             Employee().deleteRec(widget.employee);
             Navigator.of(context).pop();

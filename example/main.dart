@@ -55,9 +55,8 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({this.key}) : super();
   final Key key;
-  final MyHomePageState state = MyHomePageState();
   @override
-  MyHomePageState createState() => state;
+  MyHomePageState createState() => MyHomePageState();
 }
 
 class MyHomePageState extends State<MyHomePage> {
@@ -66,7 +65,7 @@ class MyHomePageState extends State<MyHomePage> {
 }
 
 /// Reports [error] along with its [stackTrace]
-Future<Null> _reportError(FlutterErrorDetails details) async {
+Future<void> _reportError(FlutterErrorDetails details) async {
   /// Turn to details.exception, details.stack
   FlutterError.dumpErrorToConsole(details);
 }

@@ -1,4 +1,11 @@
+## 0.3.4
+ July 10, 2019
+- updated README.md file
+- lengthened pubspec.yaml description
+- updated example app code
+
 ## 0.3.3
+ July 08, 2019
 - updated README.md file
 - updated pubspec.yaml description
 - formatted source code
