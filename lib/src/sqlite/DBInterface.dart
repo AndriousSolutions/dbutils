@@ -220,7 +220,7 @@ abstract class DBInterface {
       _dbError.clear();
     } catch (e) {
       _dbError.set(e);
-      rec = List<Map<String, dynamic>>();
+      rec = List();
     }
     return rec;
   }
@@ -246,7 +246,7 @@ abstract class DBInterface {
       _dbError.clear();
     } catch (e) {
       _dbError.set(e);
-      recs = List<Map<String, dynamic>>();
+      recs = List();
     }
     return recs;
   }
@@ -303,7 +303,7 @@ abstract class DBInterface {
       _dbError.clear();
     } catch (e) {
       _dbError.set(e);
-      recs = List<Map<String, dynamic>>();
+      recs = List();
     }
     return recs;
   }
@@ -336,7 +336,7 @@ abstract class DBInterface {
       _dbError.clear();
     } catch (e) {
       _dbError.set(e);
-      rec = List<Map>();
+      rec = List();
     }
     return rec;
   }

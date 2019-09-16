@@ -1,3 +1,8 @@
+## 0.3.5
+ Sep 16, 2019
+- updated README.md file
+- recs = List();
+
 ## 0.3.4
  July 10, 2019
 - updated README.md file
