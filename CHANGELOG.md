@@ -1,3 +1,8 @@
+## 0.3.6
+ Sep 16, 2019
+- Supplied Github homepage
+- Longer package description.
+
 ## 0.3.5
  Sep 16, 2019
 - updated README.md file
