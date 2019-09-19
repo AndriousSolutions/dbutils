@@ -1,3 +1,7 @@
+## 1.0.0
+ Sep 19, 2019
+- **Released to Production** and so the major semantic version number must be used: **1.0.0**
+
 ## 0.3.6
  Sep 16, 2019
 - Supplied Github homepage

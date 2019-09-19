@@ -3,8 +3,22 @@
 [![Build Status](https://travis-ci.org/AndriousSolutions/dbutils.svg?branch=master)](https://travis-ci.org/AndriousSolutions/dbutils)
 
 The Dart package, [**dbutils**](https://pub.dev/packages/dbutils), was written to work with the SQLite plugin, [**sqflite**](https://pub.dev/packages/sqflite), which was written by [Alex Tekartik](https://github.com/tekartik/sqflite). The plugin knows how to ‘talk to’ a SQLite database, while the Dart package knows how to ‘talk to’ the plugin. The end result allows you to manipulate the SQLite database that much easier. Before continuing, I would suggest installing the Dart package now as it includes the very same example app demonstrated here in this article. Follow the three steps below, and you’re on your way to easily working with a SQLite database in your Flutter app.
-
 ![sqlitedbutils](https://user-images.githubusercontent.com/32497443/48977150-cfe2ab00-f062-11e8-9e84-483ca902df98.png)
+### Installing
+I don't always like the version number always suggested in the '[Installing](https://pub.dev/packages/dbutils#-installing-tab-)' page.
+Instead, always go up to the '**Major**' value in the semantic version number when installing my library packages. This means always entering a version number with then two trailing zeros, '**.0.0**'. This allows you to take in any '**minor**' versions introducing new features, or in this case, any '**patch**' versions that involves bugfixes. Semantic version numbers are always in this format: **major.minor.patch**. 
+
+1. **patch** - I've made bugfixes
+2. **minor** - I've introduced new features
+3. **major** - I've essentially made a new app. It's broken backwards-compatibility and has a completely new user experience. You won't get this version until you increment the **major** number in the pubspec.yaml file.
+
+And so, in this case, add this to your package's pubspec.yaml file instead:
+```javascript
+dependencies:
+  dbutils:^1.0.0
+```
+For more information on this topic, read the article, [The importance of semantic versioning](https://medium.com/@xabaras/the-importance-of-semantic-versioning-9b78e8e59bba).
+
 ### What's on the Table?
 In the example app, we have the class, Employee, that extends the class library called, *DBInterface*. It’s found in the Dart package and implements the three required properties: To *getters* called name and version and one function called **onCreate**(). The ‘name’ is the name of the database to contain all the tables you would then define in the function, onCreate(). The ‘version’ is of course the version number of the database. Pretty straightforward so far.
 [![employee](https://user-images.githubusercontent.com/32497443/60780201-0c02e180-a103-11e9-9d6d-96e54ce58ddb.jpg)](https://github.com/AndriousSolutions/dbutils/blob/832c7204c1f091d9305fd36252a268c6bf4c0482/example/employee.dart#L22)
