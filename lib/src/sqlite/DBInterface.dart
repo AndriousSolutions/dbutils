@@ -188,7 +188,8 @@ abstract class DBInterface {
       rec = await _dbInt.updateRec(table, fields);
       _dbError.clear();
     } catch (e) {
-      _dbError.set(e);
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
       rec = Map();
     }
     return rec;
@@ -219,7 +220,8 @@ abstract class DBInterface {
       rec = await _dbInt.getRec(table, id, fields[table]);
       _dbError.clear();
     } catch (e) {
-      _dbError.set(e);
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
       rec = List();
     }
     return rec;
@@ -232,7 +234,8 @@ abstract class DBInterface {
       _dbError.clear();
     } catch (e) {
       rows = 0;
-      _dbError.set(e);
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
     }
     return rows;
   }
@@ -245,8 +248,50 @@ abstract class DBInterface {
       recs = mapQuery(recs);
       _dbError.clear();
     } catch (e) {
-      _dbError.set(e);
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
       recs = List();
+    }
+    return recs;
+  }
+
+  Future<int> rawInsert(String sqlStmt, [List<dynamic> arguments]) async {
+    int recs;
+    try {
+      recs = await _dbInt.rawInsert(sqlStmt, arguments);
+      _dbError.clear();
+    } catch (e) {
+      recs = 0;
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
+    }
+    return recs;
+  }
+
+  /// int count = await database.rawUpdate('UPDATE Test SET name = ?, VALUE = ? WHERE name = ?',["updated name", "9876", "some name"]);
+  Future<int> rawUpdate(String sqlStmt, [List<dynamic> arguments]) async {
+    int recs;
+    try {
+      recs = await _dbInt.rawUpdate(sqlStmt, arguments);
+      _dbError.clear();
+    } catch (e) {
+      recs = 0;
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
+    }
+    return recs;
+  }
+
+  /// int cnt = await _this.rawDelete('DELETE FROM Yahoo WHERE id = ?',[id]);
+  Future<int> rawDelete(String sqlStmt, [List<dynamic> arguments]) async {
+    int recs;
+    try {
+      recs = await _dbInt.rawDelete(sqlStmt, arguments);
+      _dbError.clear();
+    } catch (e) {
+      recs = 0;
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
     }
     return recs;
   }
@@ -302,8 +347,9 @@ abstract class DBInterface {
       recs = mapQuery(recs);
       _dbError.clear();
     } catch (e) {
-      _dbError.set(e);
       recs = List();
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
     }
     return recs;
   }
@@ -323,8 +369,9 @@ abstract class DBInterface {
       rec = await _dbInt.tableNames();
       _dbError.clear();
     } catch (e) {
-      _dbError.set(e);
       rec = List<Map>();
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
     }
     return rec;
   }
@@ -335,8 +382,9 @@ abstract class DBInterface {
       rec = await _dbInt.tableColumns(table);
       _dbError.clear();
     } catch (e) {
-      _dbError.set(e);
       rec = List();
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
     }
     return rec;
   }
@@ -472,8 +520,8 @@ class _DBInterface {
 
         opened = true;
       } catch (e) {
-        ex = e;
         opened = false;
+        ex = e is Exception ? e : Exception(e.toString());
       }
     }
     return opened;
@@ -514,7 +562,7 @@ class _DBInterface {
       final open = await this.open();
       if (!open) return Future.value([{}]);
     }
-    return await db.query(table,
+    return db.query(table,
         columns: fields, where: "${_keyFields[table]} = ?", whereArgs: [id]);
   }
 
@@ -523,8 +571,7 @@ class _DBInterface {
       final open = await this.open();
       if (!open) return Future.value(0);
     }
-    return await db
-        .delete(table, where: "${_keyFields[table]} = ?", whereArgs: [id]);
+    return db.delete(table, where: "${_keyFields[table]} = ?", whereArgs: [id]);
   }
 
   Future<List<Map<String, dynamic>>> rawQuery(String sqlStmt) async {
@@ -532,7 +579,31 @@ class _DBInterface {
       final open = await this.open();
       if (!open) return Future.value([{}]);
     }
-    return await db.rawQuery(sqlStmt);
+    return db.rawQuery(sqlStmt);
+  }
+
+  Future<int> rawInsert(String sqlStmt, [List<dynamic> arguments]) async {
+    if (db == null) {
+      final open = await this.open();
+      if (!open) return 0;
+    }
+    return db.rawInsert(sqlStmt, arguments);
+  }
+
+  Future<int> rawUpdate(String sqlStmt, [List<dynamic> arguments]) async {
+    if (db == null) {
+      final open = await this.open();
+      if (!open) return 0;
+    }
+    return db.rawUpdate(sqlStmt, arguments);
+  }
+
+  Future<int> rawDelete(String sqlStmt, [List<dynamic> arguments]) async {
+    if (db == null) {
+      final open = await this.open();
+      if (!open) return 0;
+    }
+    return db.rawDelete(sqlStmt, arguments);
   }
 
   Future<List<Map<String, dynamic>>> query(String table,
@@ -581,8 +652,7 @@ class _DBInterface {
       final open = await this.open();
       if (!open) return Future.value([{}]);
     }
-    return await db
-        .rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
+    return db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
   }
 
   Future<List<Map<String, dynamic>>> tableColumns(String table) async {
@@ -590,7 +660,7 @@ class _DBInterface {
       final open = await this.open();
       if (!open) return Future.value([{}]);
     }
-    return await db.rawQuery("pragma table_info('$table')");
+    return db.rawQuery("pragma table_info('$table')");
   }
 
   Future<List<String>> tableList() async {
@@ -687,8 +757,8 @@ class _DBInterface {
         Directory directory = await getApplicationDocumentsDirectory();
         _path = directory.path;
       } catch (e) {
-        ex = e;
         _path = '';
+        ex = e is Exception ? e : Exception(e.toString());
       }
     }
     return _path;

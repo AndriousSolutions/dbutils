@@ -1,3 +1,11 @@
+## 1.1.0
+ November 26, 2019
+- Exception ex = e is Exception ? e :
+- **Fix** return await db
+- rawInsert()
+- rawUpdate()
+- rawDelete()
+ 
 ## 1.0.0
  Sep 19, 2019
 - **Released to Production** and so the major semantic version number must be used: **1.0.0**
