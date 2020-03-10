@@ -23,9 +23,9 @@ import 'dart:async' show Future;
 
 import 'package:sqflite/sqflite.dart' show Database;
 
-import 'package:dbutils/sqllitedb.dart' show DBInterface;
+import 'package:dbutils/sqlite_db.dart' show SQLiteDB;
 
-class Employee extends DBInterface {
+class Employee extends SQLiteDB {
   factory Employee() {
     if (_this == null) _this = Employee._getInstance();
     return _this;
@@ -69,7 +69,7 @@ class Employee extends DBInterface {
     return rec.isNotEmpty;
   }
 
-  void deleteRec([Map<String, dynamic> employee]) =>
+  void deleteEmp([Map<String, dynamic> employee]) =>
       delete('Employee', employee['id'] ?? values['id']);
 
   Future<List<Map<String, dynamic>>> getEmployees() async {

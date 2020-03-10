@@ -1,3 +1,9 @@
+## 2.0.0
+ March 10, 2020
+- SQLiteDB implements db.DBInterface
+- supporting Firestore, RealTime, SQLite
+- firebase_auth, cloud_firestore, firebase_database
+ 
 ## 1.1.0
  November 26, 2019
 - Exception ex = e is Exception ? e :

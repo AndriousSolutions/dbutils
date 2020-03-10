@@ -45,7 +45,7 @@ class MyEmployeeState extends State<MyEmployee> {
           icon: const Icon(Icons.delete),
           tooltip: 'Delete employee',
           onPressed: () {
-            Employee().deleteRec(widget.employee);
+            Employee().deleteEmp(widget.employee);
             Navigator.of(context).pop();
           },
         ),

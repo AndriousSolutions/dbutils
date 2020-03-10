@@ -42,11 +42,13 @@ import 'package:path_provider/path_provider.dart'
 
 import 'package:flutter/foundation.dart' show mustCallSuper;
 
-/// Signature of callbacks that have no arguments and return no data.
-typedef Func = Function();
+import 'package:dbutils/src/db/db_interface.dart' as db;
 
-abstract class DBInterface {
-  DBInterface() : _dbError = _DBError() {
+/// Signature of callbacks that have no arguments and return no data.
+typedef Func = Future<bool> Function();
+
+abstract class SQLiteDB implements db.DBInterface {
+  SQLiteDB() : _dbError = _DBError() {
     _dbInt = _DBInterface(
         name: name,
         version: version,
@@ -111,7 +113,8 @@ abstract class DBInterface {
   }
 
   close() {
-    _dbInt.close();
+    // Sometimes there's no open(). gp
+    _dbInt?.close();
   }
 
   /// List of the tables and list their fields: Map<String, List>
@@ -153,6 +156,9 @@ abstract class DBInterface {
   /// There was just now an error
   bool get inError => _dbError.inError;
 
+  /// Has an error.
+  bool get hasError => _dbError.inError;
+
   /// There was no error
   bool get noError => _dbError.noError;
 
@@ -172,13 +178,8 @@ abstract class DBInterface {
     return rec;
   }
 
-  Future<bool> runTxn(Func func) async {
-    var dbClient = db;
-    var ret = await dbClient.transaction((txn) async {
-      final bool result = await func();
-      return Future.value(result);
-    });
-    return ret;
+  Future<void> runTxn(void Function() func, {bool exclusive}) async {
+    await db.transaction((txn) async => func(), exclusive: exclusive);
   }
 
   Future<Map<String, dynamic>> updateRec(
@@ -231,6 +232,20 @@ abstract class DBInterface {
     int rows;
     try {
       rows = await _dbInt.delete(table, id);
+      _dbError.clear();
+    } catch (e) {
+      rows = 0;
+      Exception ex = e is Exception ? e : Exception(e.toString());
+      _dbError.set(ex);
+    }
+    return rows;
+  }
+
+  Future<int> deleteRec(String table,
+      {String where, List<dynamic> whereArgs}) async {
+    int rows;
+    try {
+      rows = await _dbInt.deleteRec(table, where: where, whereArgs: whereArgs);
       _dbError.clear();
     } catch (e) {
       rows = 0;
@@ -418,7 +433,7 @@ class _DBError {
   }
 
   String set(Exception ex) {
-    DBInterface.setError(ex);
+    SQLiteDB.setError(ex);
     e = ex;
     // parameter may be null.
     message = ex?.toString() ?? '';
@@ -572,6 +587,18 @@ class _DBInterface {
       if (!open) return Future.value(0);
     }
     return db.delete(table, where: "${_keyFields[table]} = ?", whereArgs: [id]);
+  }
+
+  Future<int> deleteRec(String table,
+      {String where, List<dynamic> whereArgs}) async {
+    if (table == null || table.isEmpty) return 0;
+    if (where == null || where.isEmpty) return 0;
+    if (whereArgs == null || whereArgs.length == 0) return 0;
+    if (db == null) {
+      final open = await this.open();
+      if (!open) return Future.value(0);
+    }
+    return db.delete(table, where: where, whereArgs: whereArgs);
   }
 
   Future<List<Map<String, dynamic>>> rawQuery(String sqlStmt) async {
