@@ -1,8 +1,15 @@
 ## 2.0.0
+ March 11, 2020
+- Correcting version number mistake.
+- It is a major change and is not backward-compatible is some respects.
+- Included 'commented out' Flutter Web support code.
+
+## 1.2.0   **should be 2.0.0**
  March 10, 2020
 - SQLiteDB implements db.DBInterface
 - supporting Firestore, RealTime, SQLite
 - firebase_auth, cloud_firestore, firebase_database
+** Avoid using 1.2.0 by setting your pubspec.yaml file:  dbutils: ^1.1.0**
  
 ## 1.1.0
  November 26, 2019
