@@ -101,8 +101,10 @@ class FireStoreDB {
   }
 
   /// Doubled the attempt duration to 10 seconds.
-  Future<Map<String, dynamic>> runTransaction(TransactionHandler transactionHandler,
-      {Duration timeout = const Duration(seconds: 10)}) => _store.runTransaction(transactionHandler, timeout: timeout);
+  Future<Map<String, dynamic>> runTransaction(
+          TransactionHandler transactionHandler,
+          {Duration timeout = const Duration(seconds: 10)}) =>
+      _store.runTransaction(transactionHandler, timeout: timeout);
 
   set ex(Exception ex) => setError(ex);
 
