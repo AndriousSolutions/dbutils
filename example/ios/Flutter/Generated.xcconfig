@@ -4,6 +4,7 @@ FLUTTER_APPLICATION_PATH=C:\Programs\Tools\Projects\Flutter\libs\dbutils\example
 FLUTTER_TARGET=lib\main.dart
 FLUTTER_BUILD_DIR=build
 SYMROOT=${SOURCE_ROOT}/../build\ios
+OTHER_LDFLAGS=$(inherited) -framework Flutter
 FLUTTER_FRAMEWORK_DIR=C:\Programs\Tools\flutter\bin\cache\artifacts\engine\ios
 FLUTTER_BUILD_NAME=1.8.1
 FLUTTER_BUILD_NUMBER=1.8.1
