@@ -1,4 +1,4 @@
-## 2.0.1
+## 2.1.0
  April 17, 2020
 - export 'package:sqflite/sqflite.dart' in sqlite_db.dart
 
