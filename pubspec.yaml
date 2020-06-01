@@ -1,6 +1,6 @@
 name: dbutils
 description: Database utilities class library for SQLite and any number of other DBMS implemented in the future.
-version: 2.1.0
+version: 2.1.1
 author: Greg Perry <support@andrioussolutions.com>
 homepage: https://github.com/AndriousSolutions/dbutils
 repository: https://github.com/AndriousSolutions/dbutils
@@ -17,14 +17,14 @@ dependencies:
 #  firebase_core: "^0.4.0"
 
   # https://pub.dev/packages/firebase_auth
-  firebase_auth: "^0.15.0"
+  firebase_auth: ^0.16.0
 
   # https://pub.dev/packages/cloud_firestore
-  cloud_firestore: "^0.13.0"
+  cloud_firestore: ^0.13.0
 
   # RealTime Database
   # https://pub.dev/packages/firebase_database
-  firebase_database: "^3.0.0"
+  firebase_database: ^3.0.0
 
   # https://pub.dartlang.org/packages/sqflite#-changelog-tab-
   sqflite: ^1.0.0
