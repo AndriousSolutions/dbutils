@@ -1,7 +1,7 @@
 name: dbutils
 description: Database utilities class library for SQLite and any number of other DBMS implemented in the future.
 
-version: 2.1.1
+version: 2.1.2
 
 homepage: https://github.com/AndriousSolutions/dbutils
 repository: https://github.com/AndriousSolutions/dbutils
@@ -30,7 +30,7 @@ dependencies:
   # https://pub.dartlang.org/packages/sqflite#-changelog-tab-
   sqflite: ^1.0.0
 
-  # https://pub.dartlang.org/packages/path_provider#-changelog-tab-
+  # https://pub.dartlang.org/packages/path_provider
   path_provider: ^1.0.0
 
   # https://pub.dev/packages/path

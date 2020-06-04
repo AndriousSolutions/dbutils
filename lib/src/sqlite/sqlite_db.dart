@@ -1,15 +1,11 @@
 ///
 /// Copyright (C) 2018  Andrious Solutions
 ///
-/// This program is free software; you can redistribute it and/or
-/// modify it under the terms of the GNU General Public License
-/// as published by the Free Software Foundation; either version 3
-/// of the License, or any later version.
-///
+/// Licensed under the Apache License, Version 2.0 (the "License");
+/// you may not use this file except in compliance with the License.
 /// You may obtain a copy of the License at
 ///
-///  http://www.apache.org/licenses/LICENSE-2.0
-///
+///    http://www.apache.org/licenses/LICENSE-2.0
 ///
 /// Unless required by applicable law or agreed to in writing, software
 /// distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,6 +30,8 @@ import 'package:sqflite/sqflite.dart'
         OnDatabaseOpenFn,
         OnDatabaseVersionChangeFn,
         openDatabase;
+
+import 'package:sqflite/src/database_mixin.dart' show SqfliteDatabaseMixin;
 
 import 'package:path/path.dart' show join;
 
@@ -178,9 +176,9 @@ abstract class SQLiteDB implements db.DBInterface {
     return rec;
   }
 
-  Future<void> runTxn(void Function() func, {bool exclusive}) async {
-    await db.transaction((txn) async => func(), exclusive: exclusive);
-  }
+  Future<void> runTxn(void Function() func, {bool exclusive}) =>
+      (db as SqfliteDatabaseMixin)
+          .transaction((txn) async => func(), exclusive: exclusive);
 
   Future<Map<String, dynamic>> updateRec(
       String table, Map<String, dynamic> fields) async {

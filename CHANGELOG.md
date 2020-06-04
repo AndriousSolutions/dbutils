@@ -1,3 +1,7 @@
+## 2.1.2
+ June 03, 2020
+- Corrected Apache Licence
+
 ## 2.1.1
  June 01, 2020
 - firebase_auth: ^0.16.0
