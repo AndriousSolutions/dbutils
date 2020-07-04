@@ -31,7 +31,7 @@ import 'package:sqflite/sqflite.dart'
         OnDatabaseVersionChangeFn,
         openDatabase;
 
-import 'package:sqflite/src/database_mixin.dart' show SqfliteDatabaseMixin;
+//import 'package:sqflite/src/database_mixin.dart' show SqfliteDatabaseMixin;
 
 import 'package:path/path.dart' show join;
 
@@ -177,8 +177,7 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   Future<void> runTxn(void Function() func, {bool exclusive}) =>
-      (db as SqfliteDatabaseMixin)
-          .transaction((txn) async => func(), exclusive: exclusive);
+      db.transaction((txn) async => func(), exclusive: exclusive);
 
   Future<Map<String, dynamic>> updateRec(
       String table, Map<String, dynamic> fields) async {
@@ -693,7 +692,8 @@ class _DBInterface {
 
     List<String> list = List();
 
-    for (var i = 1; i < tables.length; i++) {
+    // Include android metadata table as well with 0; iOS then works.
+    for (var i = 0; i < tables.length; i++) {
       list.add(tables[i]['name']);
     }
     return list;

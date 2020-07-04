@@ -1,3 +1,8 @@
+## 2.1.3
+ July 04, 2020
+- for (var i = 0; i < tables.length; i++) {
+- db.transaction((txn) async => func(), exclusive: exclusive);
+
 ## 2.1.2
  June 03, 2020
 - Corrected Apache Licence
