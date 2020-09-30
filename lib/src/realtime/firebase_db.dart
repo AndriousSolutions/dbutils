@@ -63,9 +63,7 @@ class FireBaseDB {
   ) {
     _auth = FirebaseAuth.instance;
 
-    _auth.currentUser().then((user) {
-      _user = user;
-    });
+    _user = _auth.currentUser;
 
     _db = FirebaseDatabase.instance;
 
@@ -138,8 +136,8 @@ class FireBaseDB {
 
   FirebaseAuth _auth;
 
-  FirebaseUser _user;
-  FirebaseUser get user => _user;
+  User _user;
+  User get user => _user;
 
   FirebaseDatabase _db;
   FirebaseDatabase get db => _db;

@@ -24,21 +24,21 @@ class FireStoreDB {
   //
   FireStoreDB(String path) {
     _auth = FirebaseAuth.instance;
-    _auth.currentUser().then((user) {
-      _user = user;
-    });
-    _store = Firestore.instance;
+    _user = _auth.currentUser;
+    _store = FirebaseFirestore.instance;
     _collection = _store.collection(path);
   }
   FirebaseAuth _auth;
-  Firestore _store;
-  FirebaseUser _user;
+  FirebaseFirestore _store;
+  User _user;
 
   CollectionReference get collection => _collection;
   CollectionReference _collection;
 
-  Future<FirebaseUser> currentUser() async {
-    _user ??= await _auth.currentUser();
+  /// The current user.
+  /// No longer async operation but we'll keep it backward-compatible.
+  Future<User> currentUser() async {
+    _user ??= _auth.currentUser;
     return _user;
   }
 
@@ -50,8 +50,8 @@ class FireStoreDB {
   Future<bool> update(String path, Map<String, dynamic> data) async {
     bool update = true;
     try {
-      DocumentReference ref = _collection.document(path);
-      update = await ref.updateData(data).then((_) {
+      DocumentReference ref = _collection.doc(path);
+      update = await ref.update(data).then((_) {
         return true;
       }).catchError((ex) {
         setError(ex);
@@ -66,7 +66,7 @@ class FireStoreDB {
 
   Future<String> add(Map<String, dynamic> data) async {
     String docId;
-    FirebaseUser user = await currentUser();
+    User user = await currentUser();
     data['uid'] = user.uid;
     docId = await _collection.add(data).then((ref) {
       List<String> path = ref.path.split("/");
@@ -82,7 +82,7 @@ class FireStoreDB {
     if (docId == null || docId.trim().isEmpty) return false;
     bool delete = true;
     try {
-      DocumentReference ref = _collection.document(docId);
+      DocumentReference ref = _collection.doc(docId);
       delete = await ref.delete().then((_) {
         return true;
       }).catchError((ex) {

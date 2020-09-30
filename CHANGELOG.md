@@ -1,3 +1,12 @@
+## 2.2.0
+ September 30, 2020
+- Migrated to new version of the Android embedding
+- Update dependencies:
+firebase_core
+firebase_auth
+cloud_firestore
+firebase_database
+
 ## 2.1.3
  July 04, 2020
 - for (var i = 0; i < tables.length; i++) {
