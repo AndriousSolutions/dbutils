@@ -708,6 +708,7 @@ class _DBInterface {
   Future<void> tableFields() async {
     dynamic fldValue;
     String keyField;
+    String type;
 
     var tables = await tableList();
 
@@ -737,18 +738,30 @@ class _DBInterface {
           fields.first = keyField;
         } else {
           fields.add(col['name']);
-
+          type = col['type'];
           if (col['dflt_value'] != null) {
-            fieldValues[col['name']] = col['dflt_value'];
+            fldValue = col['dflt_value'];
+            switch (type.toLowerCase()) {
+              case 'long':
+                {
+                  fldValue = double.parse(fldValue);
+                }
+                break;
+              case 'integer':
+                {
+                  fldValue = int.parse(fldValue);
+                }
+            }
+            fieldValues[col['name']] = fldValue;
           } else {
             if (col['notnull'] == 1) {
-              switch (col['type']) {
-                case 'Long':
+              switch (type.toLowerCase()) {
+                case 'long':
                   {
                     fldValue = 0.0;
                   }
                   break;
-                case 'INTEGER':
+                case 'integer':
                   {
                     fldValue = 0;
                   }

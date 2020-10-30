@@ -1,3 +1,7 @@
+## 2.2.1
+ October 29, 2020
+- Data table field's 'default' value now in correct data type.
+
 ## 2.2.0
  September 30, 2020
 - Migrated to new version of the Android embedding
