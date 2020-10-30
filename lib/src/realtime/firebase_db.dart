@@ -276,7 +276,7 @@ class FireBaseDB {
     return ex;
   }
 
-  void _setEvents(DatabaseReference ref) {
+  void setEvents(DatabaseReference ref) {
     if (ref == null) return;
 
     ref.once().then((DataSnapshot data) {

@@ -1,7 +1,7 @@
 name: dbutils
 description: Database utilities class library for SQLite and any number of other DBMS implemented in the future.
 
-version: 2.2.1
+version: 2.2.1+2
 
 homepage: https://github.com/AndriousSolutions/dbutils
 repository: https://github.com/AndriousSolutions/dbutils
