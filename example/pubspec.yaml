@@ -4,7 +4,7 @@ description: Demonstrates the MVC design pattern implementation.
 version: 1.8.1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.10.0 <3.0.0"
 
 dependencies:
   flutter:

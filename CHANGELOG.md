@@ -1,3 +1,14 @@
+
+## 2.3.0
+ February 16, 2021
+- Updated dependencies:
+  cloud_firestore
+  firebase_auth
+  firebase_core
+  firebase_database
+  path_provider
+  sqflite
+
 ## 2.2.1
  October 29, 2020
 - Data table field's 'default' value now in correct data type.
