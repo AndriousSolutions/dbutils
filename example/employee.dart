@@ -24,11 +24,11 @@ import 'package:dbutils/sqlite_db.dart' show SQLiteDB;
 class Employee extends SQLiteDB {
   factory Employee() {
     if (_this == null) _this = Employee._getInstance();
-    return _this;
+    return _this!;
   }
 
   /// Make only one instance of this class.
-  static Employee _this;
+  static Employee? _this;
 
   Employee._getInstance() : super();
 
@@ -51,7 +51,7 @@ class Employee extends SQLiteDB {
      """);
   }
 
-  Map<String, dynamic> values;
+  Map<String?, dynamic>? values;
 
   @override
   Future<bool> init() async {
@@ -60,24 +60,24 @@ class Employee extends SQLiteDB {
     return init;
   }
 
-  Future<bool> save([Map<String, dynamic> employee]) async {
-    Map<String, dynamic> rec = await saveRec('Employee', employee ?? values);
+  Future<bool> save([Map<String?, dynamic>? employee]) async {
+    Map<String?, dynamic> rec = await saveRec('Employee', employee ?? values!);
     return rec.isNotEmpty;
   }
 
-  void deleteEmp([Map<String, dynamic> employee]) =>
-      delete('Employee', employee['id'] ?? values['id']);
+  void deleteEmp([Map<String?, dynamic>? employee]) =>
+      delete('Employee', employee?['id'] ?? values!['id']);
 
   Future<List<Map<String, dynamic>>> getEmployees() async {
     List<Map<String, dynamic>> rec =
         await this.rawQuery('SELECT * FROM Employee');
     if (rec.length == 0) {
-      values = newrec['Employee'];
+      values = newrec['Employee'] as Map<String?, dynamic>?;
     } else {
       values = rec[rec.length - 1];
     }
     return rec;
   }
 
-  Map<String, dynamic> emptyRec() => newRec('Employee');
+  Map<String?, dynamic> emptyRec() => newRec('Employee');
 }

@@ -22,8 +22,8 @@ import 'package:flutter/material.dart';
 import 'employee.dart' show Employee;
 
 class MyEmployee extends StatefulWidget {
-  MyEmployee({Key key, this.employee}) : super(key: key);
-  final Map<String, dynamic> employee;
+  MyEmployee({Key? key, this.employee}) : super(key: key);
+  final Map<String?, dynamic>? employee;
   final MyEmployeeState state = MyEmployeeState();
   @override
   MyEmployeeState createState() => state;
@@ -55,33 +55,33 @@ class MyEmployeeState extends State<MyEmployee> {
             children: [
               TextFormField(
                 controller:
-                    TextEditingController(text: widget.employee['firstname']),
+                    TextEditingController(text: widget.employee!['firstname']),
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(labelText: 'First Name'),
-                validator: (val) => val.length == 0 ? "Enter FirstName" : null,
-                onSaved: (val) => widget.employee['firstname'] = val,
+                validator: (val) => val!.length == 0 ? "Enter FirstName" : null,
+                onSaved: (val) => widget.employee!['firstname'] = val,
               ),
               TextFormField(
                 controller:
-                    TextEditingController(text: widget.employee['lastname']),
+                    TextEditingController(text: widget.employee!['lastname']),
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(labelText: 'Last Name'),
-                validator: (val) => val.length == 0 ? 'Enter LastName' : null,
-                onSaved: (val) => widget.employee['lastname'] = val,
+                validator: (val) => val!.length == 0 ? 'Enter LastName' : null,
+                onSaved: (val) => widget.employee!['lastname'] = val,
               ),
               TextFormField(
                 controller:
-                    TextEditingController(text: widget.employee['mobileno']),
+                    TextEditingController(text: widget.employee!['mobileno']),
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(labelText: 'Mobile No'),
-                onSaved: (val) => widget.employee['mobileno'] = val,
+                onSaved: (val) => widget.employee!['mobileno'] = val,
               ),
               TextFormField(
                 controller:
-                    TextEditingController(text: widget.employee['emailId']),
+                    TextEditingController(text: widget.employee!['emailId']),
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(labelText: 'Email Id'),
-                onSaved: (val) => widget.employee['emailId'] = val,
+                onSaved: (val) => widget.employee!['emailId'] = val,
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0),
@@ -98,8 +98,8 @@ class MyEmployeeState extends State<MyEmployee> {
   }
 
   void _submit() {
-    if (this.formKey.currentState.validate()) {
-      formKey.currentState.save();
+    if (this.formKey.currentState!.validate()) {
+      formKey.currentState!.save();
     } else {
       return null;
     }
@@ -112,6 +112,6 @@ class MyEmployeeState extends State<MyEmployee> {
   }
 
   void _showSnackBar(String text) {
-    scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(text)));
+    scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text(text)));
   }
 }

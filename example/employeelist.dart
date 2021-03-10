@@ -22,14 +22,14 @@ import 'employee.dart' show Employee;
 import 'employeedetail.dart';
 
 class MyEmployeeList extends StatefulWidget {
-  MyEmployeeList({Key key}) : super(key: key);
+  MyEmployeeList({Key? key}) : super(key: key);
   final MyEmployeeListPageState state = MyEmployeeListPageState();
   @override
   MyEmployeeListPageState createState() => state;
 }
 
 class MyEmployeeListPageState extends State<MyEmployeeList> {
-  Employee db;
+  late Employee db;
   @override
   void initState() {
     super.initState();
@@ -56,22 +56,22 @@ class MyEmployeeListPageState extends State<MyEmployeeList> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-                  itemCount: snapshot.data.length,
+                  itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     return InkWell(
                         onTap: Feedback.wrapForTap(
                             () => Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) => MyEmployee(
-                                    employee: snapshot.data[index]))),
+                                    employee: snapshot.data![index]))),
                             context),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(snapshot.data[index]['firstname'],
+                              Text(snapshot.data![index]['firstname'],
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.0)),
-                              Text(snapshot.data[index]['lastname'],
+                              Text(snapshot.data![index]['lastname'],
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14.0)),

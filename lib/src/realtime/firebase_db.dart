@@ -37,12 +37,12 @@ typedef EventCallback = void Function(Event event);
 
 class FireBaseDB {
   factory FireBaseDB.init({
-    OnceCallback once,
-    EventCallback onChildAdded,
-    EventCallback onChildRemoved,
-    EventCallback onChildChanged,
-    EventCallback onChildMoved,
-    EventCallback onValue,
+    OnceCallback? once,
+    EventCallback? onChildAdded,
+    EventCallback? onChildRemoved,
+    EventCallback? onChildChanged,
+    EventCallback? onChildMoved,
+    EventCallback? onValue,
   }) =>
       _this ??= FireBaseDB._(
         once,
@@ -54,12 +54,12 @@ class FireBaseDB {
       );
 
   FireBaseDB._(
-    OnceCallback once,
-    EventCallback onChildAdded,
-    EventCallback onChildRemoved,
-    EventCallback onChildChanged,
-    EventCallback onChildMoved,
-    EventCallback onValue,
+    OnceCallback? once,
+    EventCallback? onChildAdded,
+    EventCallback? onChildRemoved,
+    EventCallback? onChildChanged,
+    EventCallback? onChildMoved,
+    EventCallback? onValue,
   ) {
     _auth = FirebaseAuth.instance;
 
@@ -81,7 +81,7 @@ class FireBaseDB {
 
     _app = _db?.app;
   }
-  static FireBaseDB _this;
+  static FireBaseDB? _this;
 
   Set<OnceCallback> _onceListeners = Set();
   Set<EventCallback> _addedListeners = Set();
@@ -134,20 +134,20 @@ class FireBaseDB {
 
   Future<bool> isOnline() => Is.online();
 
-  FirebaseAuth _auth;
+  late FirebaseAuth _auth;
 
-  User _user;
-  User get user => _user;
+  User? _user;
+  User? get user => _user;
 
-  FirebaseDatabase _db;
-  FirebaseDatabase get db => _db;
-  FirebaseDatabase get instance => _db;
+  FirebaseDatabase? _db;
+  FirebaseDatabase? get db => _db;
+  FirebaseDatabase? get instance => _db;
 
-  DatabaseReference _dbReference;
-  DatabaseReference reference() => _dbReference;
+  DatabaseReference? _dbReference;
+  DatabaseReference? reference() => _dbReference;
 
-  FirebaseApp _app;
-  FirebaseApp get app => _app;
+  FirebaseApp? _app;
+  FirebaseApp? get app => _app;
 
   set onceListener(OnceCallback once) {
     if (once != null) _onceListeners.add(once);
@@ -197,12 +197,12 @@ class FireBaseDB {
     }
   }
 
-  DatabaseReference dataRef(String name) => _dbReference?.child(name);
+  DatabaseReference? dataRef(String name) => _dbReference?.child(name);
 
   String get databaseURL => _db?.databaseURL ?? 'unknown';
 
-  bool get isPersistenceEnabled => _persistenceEnabled;
-  bool _persistenceEnabled;
+  bool? get isPersistenceEnabled => _persistenceEnabled;
+  bool? _persistenceEnabled;
 
   Future<bool> setPersistenceEnabled(bool enabled) async {
     _persistenceEnabled = await _db?.setPersistenceEnabled(enabled);
@@ -223,21 +223,21 @@ class FireBaseDB {
     }
 
     try {
-      _db.goOnline();
+      _db!.goOnline();
     } finally {}
 
     return this;
   }
 
   void close() {
-    _db.goOffline();
+    _db!.goOffline();
   }
 
-  Future<void> goOnline() => _db?.goOnline();
+  Future<void>? goOnline() => _db?.goOnline();
 
-  Future<void> goOffline() => _db?.goOffline();
+  Future<void>? goOffline() => _db?.goOffline();
 
-  Future<void> purgeOutstandingWrites() => _db?.purgeOutstandingWrites();
+  Future<void>? purgeOutstandingWrites() => _db?.purgeOutstandingWrites();
 
 //  DatabaseReference prevUserIdDBRef(){
 //
@@ -256,7 +256,7 @@ class FireBaseDB {
 //    return ref;
 //  }
 
-  Exception _ex;
+  Exception? _ex;
   String get message => _ex?.toString() ?? "";
   bool get inError => _ex != null;
   bool get hasError => _ex != null;
@@ -270,8 +270,8 @@ class FireBaseDB {
   }
 
   /// Get the last error but clear it.
-  Exception getError() {
-    Exception ex = _ex;
+  Exception? getError() {
+    Exception? ex = _ex;
     _ex = null;
     return ex;
   }

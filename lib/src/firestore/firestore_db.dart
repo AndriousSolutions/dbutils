@@ -28,29 +28,29 @@ class FireStoreDB {
     _store = FirebaseFirestore.instance;
     _collection = _store.collection(path);
   }
-  FirebaseAuth _auth;
-  FirebaseFirestore _store;
-  User _user;
+  late FirebaseAuth _auth;
+  late FirebaseFirestore _store;
+  User? _user;
 
-  CollectionReference get collection => _collection;
-  CollectionReference _collection;
+  CollectionReference? get collection => _collection;
+  CollectionReference? _collection;
 
   /// The current user.
   /// No longer async operation but we'll keep it backward-compatible.
-  Future<User> currentUser() async {
+  Future<User?> currentUser() async {
     _user ??= _auth.currentUser;
     return _user;
   }
 
-  String get uid => _user.uid;
+  String get uid => _user!.uid;
 
   bool get inError => _ex != null;
-  Exception _ex;
+  Exception? _ex;
 
   Future<bool> update(String path, Map<String, dynamic> data) async {
     bool update = true;
     try {
-      DocumentReference ref = _collection.doc(path);
+      DocumentReference ref = _collection!.doc(path);
       update = await ref.update(data).then((_) {
         return true;
       }).catchError((ex) {
@@ -66,9 +66,9 @@ class FireStoreDB {
 
   Future<String> add(Map<String, dynamic> data) async {
     String docId;
-    User user = await currentUser();
+    User user = await (currentUser() as Future<User>);
     data['uid'] = user.uid;
-    docId = await _collection.add(data).then((ref) {
+    docId = await _collection!.add(data).then((ref) {
       List<String> path = ref.path.split("/");
       return path.last;
     }).catchError((ex) {
@@ -82,7 +82,7 @@ class FireStoreDB {
     if (docId == null || docId.trim().isEmpty) return false;
     bool delete = true;
     try {
-      DocumentReference ref = _collection.doc(docId);
+      DocumentReference ref = _collection!.doc(docId);
       delete = await ref.delete().then((_) {
         return true;
       }).catchError((ex) {
@@ -100,22 +100,22 @@ class FireStoreDB {
   Future<Map<String, dynamic>> runTransaction(
           TransactionHandler transactionHandler,
           {Duration timeout = const Duration(seconds: 10)}) =>
-      _store.runTransaction(transactionHandler, timeout: timeout);
+      _store.runTransaction(transactionHandler as Future<Map<String, dynamic>> Function(Transaction), timeout: timeout);
 
   set ex(Exception ex) => setError(ex);
 
-  Exception setError(Exception ex) => getError(ex);
+  Exception setError(Object ex) => getError(ex);
 
-  Exception getError([Exception ex]) {
-    Exception e = _ex;
+  Exception getError([Object? ex]) {
+    Exception? e = _ex;
     if (ex == null) {
       _ex = null;
     } else {
-      _ex = ex;
+      _ex = ex as Exception;
     }
 
     /// Return the stored error if any.
     if (e == null) e = _ex;
-    return e;
+    return e!;
   }
 }

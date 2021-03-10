@@ -58,7 +58,7 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   final _DBError _dbError;
-  _DBInterface _dbInt;
+  _DBInterface? _dbInt;
 
   /// String value with the name of the database.
   String get name;
@@ -101,11 +101,11 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   Future<bool> open() async {
-    var open = await _dbInt.open();
+    var open = await _dbInt!.open();
     if (!open) {
-      _dbError.set(_dbInt.ex);
+      _dbError.set(_dbInt!.ex);
       // Once recorded, don't keep as it may mislead future calls.
-      _dbInt.ex = null;
+      _dbInt!.ex = null;
     }
     return open;
   }
@@ -116,23 +116,23 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   /// List of the tables and list their fields: Map<String, List>
-  Map<String, List> get fields => _dbInt._fields;
+  Map<String?, List> get fields => _dbInt!._fields;
 
   /// Get the key field for a table
-  Future<String> keyField(String table) async {
+  Future<String?> keyField(String table) async {
     if (db == null) await open();
-    return _dbInt._keyFields[table];
+    return _dbInt!._keyFields[table];
   }
 
-  Map<String, Map> get newrec => _dbInt._newRec;
+  Map<String?, Map> get newrec => _dbInt!._newRec;
 
   /// Gets the Database
-  Database get db => _dbInt.db;
+  Database? get db => _dbInt!.db;
 
   /// Gets the exception if any.
-  Exception get error => _dbError.e;
+  Exception? get error => _dbError.e;
 
-  set error(Exception ex) => _dbError.set(ex);
+  set error(Exception? ex) => _dbError.set(ex);
 
   bool get isDatabaseException => _dbError.isDatabaseException;
 
@@ -161,29 +161,29 @@ abstract class SQLiteDB implements db.DBInterface {
   bool get noError => _dbError.noError;
 
   /// How many records were last updated.
-  int get recsUpdated => _dbInt.rowsUpdated;
+  int? get recsUpdated => _dbInt!.rowsUpdated;
 
-  Future<Map<String, dynamic>> saveRec(
-      String table, Map<String, dynamic> fldValues) async {
+  Future<Map<String?, dynamic>> saveRec(
+      String table, Map<String?, dynamic> fldValues) async {
     return updateRec(table, fldValues);
   }
 
-  Future<Map<String, dynamic>> saveMap(
-      String table, Map<String, dynamic> values) async {
+  Future<Map<String?, dynamic>> saveMap(
+      String? table, Map<String, dynamic> values) async {
     if (table == null || table.isEmpty) Future.value(Map<String, dynamic>());
-    Map<String, dynamic> rec = newRec(table, values);
+    Map<String?, dynamic> rec = newRec(table!, values);
     rec = await saveRec(table, rec);
     return rec;
   }
 
-  Future<void> runTxn(void Function() func, {bool exclusive}) =>
-      db.transaction((txn) async => func(), exclusive: exclusive);
+  Future<void> runTxn(void Function() func, {bool? exclusive}) =>
+      db!.transaction((txn) async => func(), exclusive: exclusive);
 
-  Future<Map<String, dynamic>> updateRec(
-      String table, Map<String, dynamic> fields) async {
-    Map<String, dynamic> rec;
+  Future<Map<String?, dynamic>> updateRec(
+      String table, Map<String?, dynamic> fields) async {
+    Map<String?, dynamic> rec;
     try {
-      rec = await _dbInt.updateRec(table, fields);
+      rec = await _dbInt!.updateRec(table, fields);
       _dbError.clear();
     } catch (e) {
       Exception ex = e is Exception ? e : Exception(e.toString());
@@ -194,10 +194,10 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   /// Return an 'empty' record map
-  Map<String, dynamic> newRec(String table, [Map<String, dynamic> data]) {
-    Map<String, dynamic> newRec = Map();
+  Map<String?, dynamic> newRec(String table, [Map<String, dynamic>? data]) {
+    Map<String?, dynamic> newRec = Map();
 
-    newRec.addAll(_dbInt._newRec[table]);
+    newRec.addAll(_dbInt!._newRec[table]!);
 
     if (data != null)
       data.forEach((key, value) {
@@ -208,19 +208,19 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   Future<List<Map<String, dynamic>>> getRecord(String table, int id) async {
-    return getRow(table, id, _dbInt._fields);
+    return getRow(table, id, _dbInt!._fields);
   }
 
   Future<List<Map<String, dynamic>>> getRow(
       String table, int id, Map fields) async {
     List<Map<String, dynamic>> rec;
     try {
-      rec = await _dbInt.getRec(table, id, fields[table]);
+      rec = await _dbInt!.getRec(table, id, fields[table]);
       _dbError.clear();
     } catch (e) {
       Exception ex = e is Exception ? e : Exception(e.toString());
       _dbError.set(ex);
-      rec = List();
+      rec = [];
     }
     return rec;
   }
@@ -228,7 +228,7 @@ abstract class SQLiteDB implements db.DBInterface {
   Future<int> delete(String table, int id) async {
     int rows;
     try {
-      rows = await _dbInt.delete(table, id);
+      rows = await _dbInt!.delete(table, id);
       _dbError.clear();
     } catch (e) {
       rows = 0;
@@ -239,10 +239,10 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   Future<int> deleteRec(String table,
-      {String where, List<dynamic> whereArgs}) async {
+      {String? where, List<dynamic>? whereArgs}) async {
     int rows;
     try {
-      rows = await _dbInt.deleteRec(table, where: where, whereArgs: whereArgs);
+      rows = await _dbInt!.deleteRec(table, where: where, whereArgs: whereArgs);
       _dbError.clear();
     } catch (e) {
       rows = 0;
@@ -255,22 +255,22 @@ abstract class SQLiteDB implements db.DBInterface {
   Future<List<Map<String, dynamic>>> rawQuery(String sqlStmt) async {
     List<Map<String, dynamic>> recs;
     try {
-      recs = await _dbInt.rawQuery(sqlStmt);
+      recs = await _dbInt!.rawQuery(sqlStmt);
       // Convert the QueryResultSet to a Map
       recs = mapQuery(recs);
       _dbError.clear();
     } catch (e) {
       Exception ex = e is Exception ? e : Exception(e.toString());
       _dbError.set(ex);
-      recs = List();
+      recs = [];
     }
     return recs;
   }
 
-  Future<int> rawInsert(String sqlStmt, [List<dynamic> arguments]) async {
+  Future<int> rawInsert(String sqlStmt, [List<dynamic>? arguments]) async {
     int recs;
     try {
-      recs = await _dbInt.rawInsert(sqlStmt, arguments);
+      recs = await _dbInt!.rawInsert(sqlStmt, arguments);
       _dbError.clear();
     } catch (e) {
       recs = 0;
@@ -281,10 +281,10 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   /// int count = await database.rawUpdate('UPDATE Test SET name = ?, VALUE = ? WHERE name = ?',["updated name", "9876", "some name"]);
-  Future<int> rawUpdate(String sqlStmt, [List<dynamic> arguments]) async {
+  Future<int> rawUpdate(String sqlStmt, [List<dynamic>? arguments]) async {
     int recs;
     try {
-      recs = await _dbInt.rawUpdate(sqlStmt, arguments);
+      recs = await _dbInt!.rawUpdate(sqlStmt, arguments);
       _dbError.clear();
     } catch (e) {
       recs = 0;
@@ -295,10 +295,10 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   /// int cnt = await _this.rawDelete('DELETE FROM Yahoo WHERE id = ?',[id]);
-  Future<int> rawDelete(String sqlStmt, [List<dynamic> arguments]) async {
+  Future<int> rawDelete(String sqlStmt, [List<dynamic>? arguments]) async {
     int recs;
     try {
-      recs = await _dbInt.rawDelete(sqlStmt, arguments);
+      recs = await _dbInt!.rawDelete(sqlStmt, arguments);
       _dbError.clear();
     } catch (e) {
       recs = 0;
@@ -309,17 +309,17 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   Future<List<Map<String, dynamic>>> getTable(String table,
-      {bool distinct,
-      String where,
-      List whereArgs,
-      String groupBy,
-      String having,
-      String orderBy,
-      int limit,
-      int offset}) {
+      {bool? distinct,
+      String? where,
+      List? whereArgs,
+      String? groupBy,
+      String? having,
+      String? orderBy,
+      int? limit,
+      int? offset}) {
     return query(
       table,
-      _dbInt._fields[table],
+      _dbInt!._fields[table],
       distinct: distinct,
       where: where,
       whereArgs: whereArgs,
@@ -331,21 +331,21 @@ abstract class SQLiteDB implements db.DBInterface {
     );
   }
 
-  Future<List<Map<String, dynamic>>> query(String table, List columns,
-      {bool distinct,
-      String where,
-      List whereArgs,
-      String groupBy,
-      String having,
-      String orderBy,
-      int limit,
-      int offset}) async {
+  Future<List<Map<String, dynamic>>> query(String table, List? columns,
+      {bool? distinct,
+      String? where,
+      List? whereArgs,
+      String? groupBy,
+      String? having,
+      String? orderBy,
+      int? limit,
+      int? offset}) async {
     List<Map<String, dynamic>> recs;
 
     try {
-      recs = await _dbInt.query(
+      recs = await _dbInt!.query(
         table,
-        columns: columns,
+        columns: columns as List<String?>?,
         distinct: distinct,
         where: where,
         whereArgs: whereArgs,
@@ -359,7 +359,7 @@ abstract class SQLiteDB implements db.DBInterface {
       recs = mapQuery(recs);
       _dbError.clear();
     } catch (e) {
-      recs = List();
+      recs = [];
       Exception ex = e is Exception ? e : Exception(e.toString());
       _dbError.set(ex);
     }
@@ -378,10 +378,10 @@ abstract class SQLiteDB implements db.DBInterface {
   Future<List<Map>> tableNames() async {
     List<Map> rec;
     try {
-      rec = await _dbInt.tableNames();
+      rec = await _dbInt!.tableNames();
       _dbError.clear();
     } catch (e) {
-      rec = List<Map>();
+      rec = [];
       Exception ex = e is Exception ? e : Exception(e.toString());
       _dbError.set(ex);
     }
@@ -391,24 +391,24 @@ abstract class SQLiteDB implements db.DBInterface {
   Future<List<Map>> tableColumns(String table) async {
     List<Map> rec;
     try {
-      rec = await _dbInt.tableColumns(table);
+      rec = await _dbInt!.tableColumns(table);
       _dbError.clear();
     } catch (e) {
-      rec = List();
+      rec = [];
       Exception ex = e is Exception ? e : Exception(e.toString());
       _dbError.set(ex);
     }
     return rec;
   }
 
-  static Exception _exception;
+  static Exception? _exception;
 
-  static setError(Object ex) {
+  static setError(Object? ex) {
     if (ex is! Exception) ex = Exception(ex.toString());
     _exception = ex;
   }
 
-  static Exception getError() {
+  static Exception? getError() {
     var ex = _exception;
     _exception = Exception();
     return ex;
@@ -418,7 +418,7 @@ abstract class SQLiteDB implements db.DBInterface {
 class _DBError {
   String message = '';
 
-  Exception e;
+  Exception? e;
 
   bool get inError => message.isNotEmpty;
 
@@ -429,7 +429,7 @@ class _DBError {
     message = '';
   }
 
-  String set(Exception ex) {
+  String set(Exception? ex) {
     SQLiteDB.setError(ex);
     e = ex;
     // parameter may be null.
@@ -439,7 +439,7 @@ class _DBError {
 
   bool get isDatabaseException => e != null && e is DatabaseException;
 
-  bool isNoSuchTableError([String table]) {
+  bool isNoSuchTableError([String? table]) {
     if (e != null && e is DatabaseException) {
       return (e as DatabaseException).isNoSuchTableError();
     }
@@ -474,7 +474,7 @@ class _DBError {
     return false;
   }
 
-  bool isUniqueConstraintError([String field]) {
+  bool isUniqueConstraintError([String? field]) {
     if (e != null && e is DatabaseException) {
       return (e as DatabaseException).isUniqueConstraintError();
     }
@@ -493,26 +493,26 @@ class _DBInterface {
     this.onDowngrade,
   });
 
-  final String name;
-  final int version;
-  final OnDatabaseCreateFn onCreate;
-  final OnDatabaseOpenFn onOpen;
-  final OnDatabaseConfigureFn onConfigure;
-  final OnDatabaseVersionChangeFn onUpgrade;
-  final OnDatabaseVersionChangeFn onDowngrade;
+  final String? name;
+  final int? version;
+  final OnDatabaseCreateFn? onCreate;
+  final OnDatabaseOpenFn? onOpen;
+  final OnDatabaseConfigureFn? onConfigure;
+  final OnDatabaseVersionChangeFn? onUpgrade;
+  final OnDatabaseVersionChangeFn? onDowngrade;
 
-  Exception ex;
-  Database db;
+  Exception? ex;
+  Database? db;
 
   Future<bool> open() async {
     bool opened;
 
     if (db != null) {
-      opened = db is Database && (db.path?.isNotEmpty ?? false);
+      opened = db is Database && (db!.path?.isNotEmpty ?? false);
     } else {
-      assert(version > 0, "Version number must be greater than one!");
+      assert(version! > 0, "Version number must be greater than one!");
 
-      var path = await localPath;
+      var path = await (localPath as Future<String>);
 
       String dbPath = join(path, name);
 
@@ -549,33 +549,33 @@ class _DBInterface {
     temp?.close();
   }
 
-  int rowsUpdated;
+  int? rowsUpdated;
 
-  Future<Map<String, dynamic>> updateRec(
-      String table, Map<String, dynamic> fields) async {
+  Future<Map<String?, dynamic>> updateRec(
+      String? table, Map<String?, dynamic> fields) async {
     rowsUpdated = 0;
-    String keyFld = _keyFields[table];
+    String? keyFld = _keyFields[table];
     var keyValue = fields[keyFld];
     if (table == null) {
       /// We got nothing.
     } else if (keyValue == null) {
-      fields[keyFld] = await db.insert(table, fields);
+      fields[keyFld] = await db!.insert(table, fields as Map<String, Object?>);
       rowsUpdated = 1;
     } else {
-      rowsUpdated = await db
-          .update(table, fields, where: "$keyFld = ?", whereArgs: [keyValue]);
+      rowsUpdated = await db!
+          .update(table, fields as Map<String, Object?>, where: "$keyFld = ?", whereArgs: [keyValue]);
     }
     return fields;
   }
 
   Future<List<Map<String, dynamic>>> getRec(
-      String table, int id, List fields) async {
+      String table, int id, List? fields) async {
     if (db == null) {
       final open = await this.open();
       if (!open) return Future.value([{}]);
     }
-    return db.query(table,
-        columns: fields, where: "${_keyFields[table]} = ?", whereArgs: [id]);
+    return db!.query(table,
+        columns: fields as List<String>?, where: "${_keyFields[table]} = ?", whereArgs: [id]);
   }
 
   Future<int> delete(String table, int id) async {
@@ -583,11 +583,11 @@ class _DBInterface {
       final open = await this.open();
       if (!open) return Future.value(0);
     }
-    return db.delete(table, where: "${_keyFields[table]} = ?", whereArgs: [id]);
+    return db!.delete(table, where: "${_keyFields[table]} = ?", whereArgs: [id]);
   }
 
-  Future<int> deleteRec(String table,
-      {String where, List<dynamic> whereArgs}) async {
+  Future<int> deleteRec(String? table,
+      {String? where, List<dynamic>? whereArgs}) async {
     if (table == null || table.isEmpty) return 0;
     if (where == null || where.isEmpty) return 0;
     if (whereArgs == null || whereArgs.length == 0) return 0;
@@ -595,7 +595,7 @@ class _DBInterface {
       final open = await this.open();
       if (!open) return Future.value(0);
     }
-    return db.delete(table, where: where, whereArgs: whereArgs);
+    return db!.delete(table, where: where, whereArgs: whereArgs);
   }
 
   Future<List<Map<String, dynamic>>> rawQuery(String sqlStmt) async {
@@ -603,47 +603,47 @@ class _DBInterface {
       final open = await this.open();
       if (!open) return Future.value([{}]);
     }
-    return db.rawQuery(sqlStmt);
+    return db!.rawQuery(sqlStmt);
   }
 
-  Future<int> rawInsert(String sqlStmt, [List<dynamic> arguments]) async {
+  Future<int> rawInsert(String sqlStmt, [List<dynamic>? arguments]) async {
     if (db == null) {
       final open = await this.open();
       if (!open) return 0;
     }
-    return db.rawInsert(sqlStmt, arguments);
+    return db!.rawInsert(sqlStmt, arguments);
   }
 
-  Future<int> rawUpdate(String sqlStmt, [List<dynamic> arguments]) async {
+  Future<int> rawUpdate(String sqlStmt, [List<dynamic>? arguments]) async {
     if (db == null) {
       final open = await this.open();
       if (!open) return 0;
     }
-    return db.rawUpdate(sqlStmt, arguments);
+    return db!.rawUpdate(sqlStmt, arguments);
   }
 
-  Future<int> rawDelete(String sqlStmt, [List<dynamic> arguments]) async {
+  Future<int> rawDelete(String sqlStmt, [List<dynamic>? arguments]) async {
     if (db == null) {
       final open = await this.open();
       if (!open) return 0;
     }
-    return db.rawDelete(sqlStmt, arguments);
+    return db!.rawDelete(sqlStmt, arguments);
   }
 
   Future<List<Map<String, dynamic>>> query(String table,
-      {bool distinct = false,
-      List<String> columns,
-      String where,
-      List whereArgs,
-      String groupBy,
-      String having,
-      String orderBy,
-      int limit,
-      int offset}) async {
+      {bool? distinct = false,
+      List<String?>? columns,
+      String? where,
+      List? whereArgs,
+      String? groupBy,
+      String? having,
+      String? orderBy,
+      int? limit,
+      int? offset}) async {
     if (db == null) {
       final open = await this.open();
       if (!open) return Future.value([{}]);
-      return await db.query(
+      return await db!.query(
         table,
         distinct: distinct,
         where: where,
@@ -656,10 +656,10 @@ class _DBInterface {
       );
     } else {
       final cols = columns == null ? _fields[table] : columns;
-      return await db.query(
+      return await db!.query(
         table,
         distinct: distinct,
-        columns: cols,
+        columns: cols as List<String>?,
         where: where,
         whereArgs: whereArgs,
         groupBy: groupBy,
@@ -676,21 +676,21 @@ class _DBInterface {
       final open = await this.open();
       if (!open) return Future.value([{}]);
     }
-    return db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
+    return db!.rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
   }
 
-  Future<List<Map<String, dynamic>>> tableColumns(String table) async {
+  Future<List<Map<String, dynamic>>> tableColumns(String? table) async {
     if (db == null) {
       final open = await this.open();
       if (!open) return Future.value([{}]);
     }
-    return db.rawQuery("pragma table_info('$table')");
+    return db!.rawQuery("pragma table_info('$table')");
   }
 
-  Future<List<String>> tableList() async {
+  Future<List<String?>> tableList() async {
     List<Map<String, dynamic>> tables = await tableNames();
 
-    List<String> list = List();
+    List<String?> list = [];
 
     // Include android metadata table as well with 0; iOS then works.
     for (var i = 0; i < tables.length; i++) {
@@ -699,30 +699,30 @@ class _DBInterface {
     return list;
   }
 
-  final Map<String, List> _fields = Map();
+  final Map<String?, List> _fields = Map();
 
-  final Map<String, String> _keyFields = Map();
+  final Map<String?, String?> _keyFields = Map();
 
-  final Map<String, Map<String, dynamic>> _newRec = Map();
+  final Map<String?, Map<String?, dynamic>> _newRec = Map();
 
   Future<void> tableFields() async {
     dynamic fldValue;
-    String keyField;
-    String type;
+    String? keyField;
+    String? type;
 
     var tables = await tableList();
 
     for (var table in tables) {
       var columns = await tableColumns(table);
 
-      List<String> fields = List();
+      List<String?> fields = [];
 
       /// ROWID is automatically added to all SQLite tables by default, and is a unique integer,
       keyField = 'rowid';
 
       fields.add(keyField);
 
-      Map<String, dynamic> fieldValues = Map();
+      Map<String?, dynamic> fieldValues = Map();
 
       fieldValues[keyField] = null;
 
@@ -741,7 +741,7 @@ class _DBInterface {
           type = col['type'];
           if (col['dflt_value'] != null) {
             fldValue = col['dflt_value'];
-            switch (type.toLowerCase()) {
+            switch (type!.toLowerCase()) {
               case 'long':
                 {
                   fldValue = double.parse(fldValue);
@@ -755,7 +755,7 @@ class _DBInterface {
             fieldValues[col['name']] = fldValue;
           } else {
             if (col['notnull'] == 1) {
-              switch (type.toLowerCase()) {
+              switch (type!.toLowerCase()) {
                 case 'long':
                   {
                     fldValue = 0.0;
@@ -781,15 +781,15 @@ class _DBInterface {
 
       _fields[table] = fields;
 
-      _newRec[table] = Map<String, dynamic>();
+      _newRec[table] = Map<String?, dynamic>();
 
       /// Make a copy as an 'empty' record.
-      _newRec[table]
+      _newRec[table]!
           .addEntries(fieldValues.entries); //_fldValues[table].entries);
     }
   }
 
-  Future<String> get localPath async {
+  Future<String?> get localPath async {
     if (_path == null) {
       try {
         Directory directory = await getApplicationDocumentsDirectory();
@@ -802,5 +802,5 @@ class _DBInterface {
     return _path;
   }
 
-  String _path;
+  String? _path;
 }

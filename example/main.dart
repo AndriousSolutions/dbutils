@@ -32,7 +32,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({this.key});
-  final Key key;
+  final Key? key;
 
   // This widget is the root of your application.
   @override
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({this.key}) : super();
-  final Key key;
+  final Key? key;
   @override
   MyHomePageState createState() => MyHomePageState();
 }
