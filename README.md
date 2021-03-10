@@ -16,7 +16,7 @@ Instead, always go up to the '**Major**' value in the semantic version number wh
 And so, in this case, add this to your package's pubspec.yaml file instead:
 ```javascript
 dependencies:
-  dbutils:^2.0.0
+  dbutils:^3.0.0
 ```
 For more information on this topic, read the article, [The importance of semantic versioning](https://medium.com/@xabaras/the-importance-of-semantic-versioning-9b78e8e59bba).
 
