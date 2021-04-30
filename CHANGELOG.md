@@ -1,4 +1,9 @@
 
+## 3.1.0
+ April 30, 2021
+- open(throwError: throwError);
+- analysis_options.yaml
+
 ## 3.0.0
  March 10, 2021
 - Null safety 2.12.0

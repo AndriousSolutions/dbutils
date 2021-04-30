@@ -20,9 +20,43 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
+@Deprecated('Use the class, FireStoreCollection, instead')
 class FireStoreDB {
+  FireStoreDB(String path) : _collection = FireStoreCollection(path);
+  final FireStoreCollection _collection;
+
+  CollectionReference? get collection => _collection.collection;
+
+  Future<User?> currentUser() async => _collection.currentUser();
+
+  String get uid => _collection.uid;
+
+  bool get inError => _collection.inError;
+
+  Future<bool> update(String path, Map<String, dynamic> data) async =>
+      _collection.update(path, data);
+
+  Future<String> add(Map<String, dynamic> data) async => _collection.add(data);
+
+  Future<bool> delete(String docId) async => _collection.delete(docId);
+
+  Future<Map<String, dynamic>> runTransaction(
+          TransactionHandler transactionHandler,
+          {Duration timeout = const Duration(seconds: 10)}) =>
+      _collection.runTransaction(transactionHandler, timeout: timeout);
+
+  // ignore: avoid_setters_without_getters
+  set ex(Exception ex) => _collection.ex = ex;
+
+  Exception setError(Object ex) => _collection.setError(ex);
+
+  Exception getError([Object? ex]) => _collection.getError(ex);
+}
+
+/// todo: This has to be split up to a parent class.
+class FireStoreCollection {
   //
-  FireStoreDB(String path) {
+  FireStoreCollection(String path) {
     _auth = FirebaseAuth.instance;
     _user = _auth.currentUser;
     _store = FirebaseFirestore.instance;
@@ -37,10 +71,7 @@ class FireStoreDB {
 
   /// The current user.
   /// No longer async operation but we'll keep it backward-compatible.
-  Future<User?> currentUser() async {
-    _user ??= _auth.currentUser;
-    return _user;
-  }
+  Future<User?> currentUser() async => _user ??= _auth.currentUser;
 
   String get uid => _user!.uid;
 
@@ -50,10 +81,10 @@ class FireStoreDB {
   Future<bool> update(String path, Map<String, dynamic> data) async {
     bool update = true;
     try {
-      DocumentReference ref = _collection!.doc(path);
+      final DocumentReference ref = _collection!.doc(path);
       update = await ref.update(data).then((_) {
         return true;
-      }).catchError((ex) {
+      }).catchError((Object ex) {
         setError(ex);
         return false;
       });
@@ -65,27 +96,28 @@ class FireStoreDB {
   }
 
   Future<String> add(Map<String, dynamic> data) async {
-    String docId;
-    User user = await (currentUser() as Future<User>);
+    // ignore: avoid_as
+    final User user = await (currentUser() as Future<User>);
     data['uid'] = user.uid;
-    docId = await _collection!.add(data).then((ref) {
-      List<String> path = ref.path.split("/");
+    return _collection!.add(data).then((ref) {
+      final List<String> path = ref.path.split('/');
       return path.last;
-    }).catchError((ex) {
+    }).catchError((Object ex) {
       setError(ex);
-      return "";
+      return '';
     });
-    return docId;
   }
 
-  Future<bool> delete(String docId) async {
-    if (docId == null || docId.trim().isEmpty) return false;
+  Future<bool> delete(String? docId) async {
+    if (docId == null || docId.trim().isEmpty) {
+      return false;
+    }
     bool delete = true;
     try {
-      DocumentReference ref = _collection!.doc(docId);
+      final DocumentReference ref = _collection!.doc(docId);
       delete = await ref.delete().then((_) {
         return true;
-      }).catchError((ex) {
+      }).catchError((Object ex) {
         setError(ex);
         return false;
       });
@@ -100,8 +132,12 @@ class FireStoreDB {
   Future<Map<String, dynamic>> runTransaction(
           TransactionHandler transactionHandler,
           {Duration timeout = const Duration(seconds: 10)}) =>
-      _store.runTransaction(transactionHandler as Future<Map<String, dynamic>> Function(Transaction), timeout: timeout);
+      _store.runTransaction(
+          transactionHandler as Future<Map<String, dynamic>> Function(
+              Transaction),
+          timeout: timeout);
 
+  // ignore: avoid_setters_without_getters
   set ex(Exception ex) => setError(ex);
 
   Exception setError(Object ex) => getError(ex);
@@ -111,11 +147,12 @@ class FireStoreDB {
     if (ex == null) {
       _ex = null;
     } else {
+      // ignore: avoid_as
       _ex = ex as Exception;
     }
 
     /// Return the stored error if any.
-    if (e == null) e = _ex;
+    e ??= _ex;
     return e!;
   }
 }
