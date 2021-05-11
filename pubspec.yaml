@@ -1,7 +1,7 @@
 name: dbutils
 description: Database utilities class library for SQLite and any number of other DBMS implemented in the future.
 
-version: 3.1.0
+version: 3.2.0
 
 homepage: https://github.com/AndriousSolutions/dbutils
 repository: https://github.com/AndriousSolutions/dbutils
@@ -13,28 +13,28 @@ dependencies:
   flutter:
     sdk: flutter
 
-# Web only.
-  # https://pub.dev/packages/firebase_core
-  firebase_core: ^1.0.1
+  # https://pub.dev/packages/cloud_firestore
+  cloud_firestore: ^2.0.0
 
   # https://pub.dev/packages/firebase_auth
-  firebase_auth: ^1.0.1
+  firebase_auth: ^1.0.0
 
-  # https://pub.dev/packages/cloud_firestore
-  cloud_firestore: ^1.0.1
+  # Web only.
+  # https://pub.dev/packages/firebase_core
+  firebase_core: ^1.0.0
 
   # RealTime Database
   # https://pub.dev/packages/firebase_database
-  firebase_database: ^6.1.0
-
-  # https://pub.dartlang.org/packages/sqflite#-changelog-tab-
-  sqflite: ^2.0.0+2
+  firebase_database: ^6.0.0
 
   # https://pub.dartlang.org/packages/path_provider
-  path_provider: ^2.0.1
+  path_provider: ^2.0.0
 
   # https://pub.dev/packages/path
-  path: ^1.8.0
+  path: ^1.0.0
+
+  # https://pub.dartlang.org/packages/sqflite#-changelog-tab-
+  sqflite: ^2.0.0
 
 dev_dependencies:
   flutter_test:

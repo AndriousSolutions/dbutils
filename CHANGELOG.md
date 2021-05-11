@@ -1,4 +1,15 @@
 
+## 3.2.0
+ May 11, 2021
+- cloud_firestore 2.1.0
+- cloud_firestore_platform_interface 5.0.1
+- firebase_auth 1.1.4
+- firebase_core 1.1.1
+- firebase_database 6.1.2
+- path_provider_windows 2.0.1
+- process 4.2.1
+- sqflite 2.0.0+3
+
 ## 3.1.0
  April 30, 2021
 - open(throwError: throwError);

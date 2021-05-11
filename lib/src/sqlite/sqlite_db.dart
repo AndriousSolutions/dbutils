@@ -110,11 +110,11 @@ abstract class SQLiteDB implements db.DBInterface {
     if (!open) {
       _dbError.set(_dbInt!.ex);
       // Once recorded, don't keep as it may mislead future calls.
-      if(throwError && _dbInt!.ex != null){
+      if (throwError && _dbInt!.ex != null) {
         final Exception err = _dbInt!.ex!;
         _dbInt!.ex = null;
         throw err;
-      }else{
+      } else {
         _dbInt!.ex = null;
       }
     }
@@ -814,19 +814,16 @@ class _DBInterface {
       for (final col in columns) {
         /// Replace the primary key field.
         if (col['pk'] == 1 && keyField != col['name']) {
-
           fieldValues.remove(keyField);
           keyField = col['name'];
           _keyFields[table] = keyField;
           fieldValues[keyField] = null;
           fields.first = keyField;
         } else {
-
           fields.add(col['name']);
           type = col['type'];
 
           if (col['dflt_value'] != null) {
-
             fldValue = col['dflt_value'];
 
             switch (type!.toLowerCase()) {
@@ -842,9 +839,7 @@ class _DBInterface {
             }
             fieldValues[col['name']] = fldValue;
           } else {
-
             if (col['notnull'] == 1) {
-
               switch (type!.toLowerCase()) {
                 case 'long':
                   {
@@ -863,7 +858,6 @@ class _DBInterface {
               }
               fieldValues[col['name']] = fldValue;
             } else {
-
               fieldValues[col['name']] = null;
             }
           }
