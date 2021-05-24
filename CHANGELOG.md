@@ -1,4 +1,17 @@
 
+## 3.3.0
+ May 24, 2021
+- firebase_database: 7.0.0 (was 6.1.2)
+- cloud_firestore 2.2.0 (was 2.1.0)
+- cloud_firestore_platform_interface 5.1.0 (was 5.0.1)
+- cloud_firestore_web 2.1.0 (was 2.0.1)
+- file 6.1.1 (was 6.1.0)
+- firebase_auth 1.2.0 (was 1.1.4)
+- firebase_auth_platform_interface 4.2.3 (was 4.2.2)
+- firebase_auth_web 1.1.3 (was 1.1.2)
+- firebase_core 1.2.0 (was 1.1.1)
+- firebase_core_web 1.1.0 (was 1.0.3)
+
 ## 3.2.0
  May 11, 2021
 - cloud_firestore 2.1.0
