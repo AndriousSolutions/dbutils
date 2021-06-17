@@ -202,9 +202,9 @@ abstract class SQLiteDB implements db.DBInterface {
 
   @override
   Future<Map<String?, dynamic>> saveMap(
-      String? table, Map<String, dynamic> values) async {
-    if (table == null || table.isEmpty) {
-      await Future.value(<String, dynamic>{});
+      String? table, Map<String, dynamic>? values) async {
+    if (table == null || table.isEmpty || values == null || values.isEmpty) {
+      return {};
     }
     final Map<String?, dynamic> rec = newRec(table!, values);
     return saveRec(table, rec);

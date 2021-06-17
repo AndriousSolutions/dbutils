@@ -1,4 +1,8 @@
 
+## 3.3.1
+ June 16, 2021
+- return {};
+
 ## 3.3.0
  May 24, 2021
 - firebase_database: 7.0.0 (was 6.1.2)
