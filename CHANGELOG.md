@@ -1,4 +1,8 @@
 
+## 3.3.1+02
+ June 17, 2021
+- newRec(table, values);
+
 ## 3.3.1
  June 16, 2021
 - return {};

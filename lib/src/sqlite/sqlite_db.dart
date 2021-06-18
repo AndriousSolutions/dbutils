@@ -206,7 +206,7 @@ abstract class SQLiteDB implements db.DBInterface {
     if (table == null || table.isEmpty || values == null || values.isEmpty) {
       return {};
     }
-    final Map<String?, dynamic> rec = newRec(table!, values);
+    final Map<String?, dynamic> rec = newRec(table, values);
     return saveRec(table, rec);
   }
 
