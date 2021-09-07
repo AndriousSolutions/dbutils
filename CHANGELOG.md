@@ -1,4 +1,8 @@
 
+## 3.4.0
+ September 07, 2021
+- firebase_auth: ^3.0.0
+
 ## 3.3.1+02
  June 17, 2021
 - newRec(table, values);

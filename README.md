@@ -18,7 +18,6 @@ And so, in this case, add this to your package's pubspec.yaml file instead:
 dependencies:
   dbutils:^3.0.0
 ```
-For more information on this topic, read the article, [The importance of semantic versioning](https://medium.com/@xabaras/the-importance-of-semantic-versioning-9b78e8e59bba).
 
 ### What's on the Table?
 In the example app, we have the class, Employee, that extends the class library called, *DBInterface*. It’s found in the Dart package and implements the three required properties: To *getters* called name and version and one function called **onCreate**(). The ‘name’ is the name of the database to contain all the tables you would then define in the function, onCreate(). The ‘version’ is of course the version number of the database. Pretty straightforward so far.
