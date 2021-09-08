@@ -1,4 +1,11 @@
 
+## 4.0.0
+ September 08, 2021
+- Included an example app
+- List<Object?>? whereArgs,
+- Map<String?, dynamic> to Map<String, dynamic>
+- Changed query() function to optionally take columns.
+
 ## 3.4.0
  September 07, 2021
 - firebase_auth: ^3.0.0

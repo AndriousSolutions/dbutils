@@ -65,7 +65,8 @@ abstract class DBInterface {
     throw UnimplementedError();
   }
 
-  Future<List<Map<String, dynamic>>> getRow(String table, int id, Map fields) {
+  Future<List<Map<String, dynamic>>> getRow(
+      String table, int id, Map<String, dynamic> fields) {
     // TODO: implement getRow
     throw UnimplementedError();
   }
@@ -73,7 +74,7 @@ abstract class DBInterface {
   Future<List<Map<String, dynamic>>> getTable(String table,
       {bool? distinct,
       String? where,
-      List? whereArgs,
+      List<Object?>? whereArgs,
       String? groupBy,
       String? having,
       String? orderBy,
@@ -99,15 +100,16 @@ abstract class DBInterface {
   }
 
   // TODO: implement newrec
-  Map<String?, Map> get newrec => throw UnimplementedError();
+  Map<String?, Map<String, dynamic>> get newrec => throw UnimplementedError();
 
   // TODO: implement noError
   bool get noError => throw UnimplementedError();
 
-  Future<List<Map<String, dynamic>>> query(String table, List columns,
-      {bool? distinct,
+  Future<List<Map<String, dynamic>>> query(String table,
+      {List<String>? columns,
+      bool? distinct,
       String? where,
-      List? whereArgs,
+      List<Object?>? whereArgs,
       String? groupBy,
       String? having,
       String? orderBy,
@@ -151,8 +153,8 @@ abstract class DBInterface {
     throw UnimplementedError();
   }
 
-  Future<Map<String?, dynamic>> saveRec(
-      String table, Map<String?, dynamic> fldValues) {
+  Future<Map<String, dynamic>> saveRec(
+      String table, Map<String, dynamic> fldValues) {
     // TODO: implement saveRec
     throw UnimplementedError();
   }
@@ -168,7 +170,7 @@ abstract class DBInterface {
   }
 
   Future<Map<String?, dynamic>> updateRec(
-      String table, Map<String?, dynamic> fields) {
+      String table, Map<String, dynamic> fields) {
     // TODO: implement updateRec
     throw UnimplementedError();
   }

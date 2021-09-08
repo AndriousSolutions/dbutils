@@ -129,7 +129,7 @@ abstract class SQLiteDB implements db.DBInterface {
 
   /// List of the tables and list their fields: Map<String, List>
   @override
-  Map<String?, List> get fields => _dbInt!._fields;
+  Map<String?, List<String>> get fields => _dbInt!._fields;
 
   /// Get the key field for a table
   @override
@@ -141,7 +141,7 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   @override
-  Map<String?, Map> get newrec => _dbInt!._newRec;
+  Map<String?, Map<String, dynamic>> get newrec => _dbInt!._newRec;
 
   /// Gets the Database
   @override
@@ -195,18 +195,18 @@ abstract class SQLiteDB implements db.DBInterface {
   int? get recsUpdated => _dbInt!.rowsUpdated;
 
   @override
-  Future<Map<String?, dynamic>> saveRec(
-      String table, Map<String?, dynamic> fldValues) async {
+  Future<Map<String, dynamic>> saveRec(
+      String table, Map<String, dynamic> fldValues) async {
     return updateRec(table, fldValues);
   }
 
   @override
-  Future<Map<String?, dynamic>> saveMap(
+  Future<Map<String, dynamic>> saveMap(
       String? table, Map<String, dynamic>? values) async {
     if (table == null || table.isEmpty || values == null || values.isEmpty) {
       return {};
     }
-    final Map<String?, dynamic> rec = newRec(table, values);
+    final Map<String, dynamic> rec = newRec(table, values);
     return saveRec(table, rec);
   }
 
@@ -215,9 +215,9 @@ abstract class SQLiteDB implements db.DBInterface {
       db!.transaction((txn) async => func(), exclusive: exclusive);
 
   @override
-  Future<Map<String?, dynamic>> updateRec(
-      String table, Map<String?, dynamic> fields) async {
-    Map<String?, dynamic> rec;
+  Future<Map<String, dynamic>> updateRec(
+      String table, Map<String, dynamic> fields) async {
+    Map<String, dynamic> rec;
     try {
       rec = await _dbInt!.updateRec(table, fields);
       _dbError.clear();
@@ -231,8 +231,8 @@ abstract class SQLiteDB implements db.DBInterface {
 
   /// Return an 'empty' record map
   @override
-  Map<String?, dynamic> newRec(String table, [Map<String, dynamic>? data]) {
-    final Map<String?, dynamic> newRec = {};
+  Map<String, dynamic> newRec(String table, [Map<String, dynamic>? data]) {
+    final Map<String, dynamic> newRec = {};
 
     newRec.addAll(_dbInt!._newRec[table]!);
 
@@ -254,7 +254,7 @@ abstract class SQLiteDB implements db.DBInterface {
 
   @override
   Future<List<Map<String, dynamic>>> getRow(
-      String table, int id, Map fields) async {
+      String table, int id, Map<String, dynamic> fields) async {
     List<Map<String, dynamic>> rec;
     try {
       rec = await _dbInt!.getRec(table, id, fields[table]);
@@ -359,7 +359,7 @@ abstract class SQLiteDB implements db.DBInterface {
   Future<List<Map<String, dynamic>>> getTable(String table,
       {bool? distinct,
       String? where,
-      List? whereArgs,
+      List<Object?>? whereArgs,
       String? groupBy,
       String? having,
       String? orderBy,
@@ -367,7 +367,7 @@ abstract class SQLiteDB implements db.DBInterface {
       int? offset}) {
     return query(
       table,
-      _dbInt!._fields[table],
+      columns: _dbInt!._fields[table],
       distinct: distinct,
       where: where,
       whereArgs: whereArgs,
@@ -380,10 +380,11 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> query(String table, List? columns,
-      {bool? distinct,
+  Future<List<Map<String, dynamic>>> query(String table,
+      {List<String>? columns,
+      bool? distinct,
       String? where,
-      List? whereArgs,
+      List<Object?>? whereArgs,
       String? groupBy,
       String? having,
       String? orderBy,
@@ -394,7 +395,7 @@ abstract class SQLiteDB implements db.DBInterface {
     try {
       recs = await _dbInt!.query(
         table,
-        columns: columns as List<String?>?,
+        columns: columns,
         distinct: distinct,
         where: where,
         whereArgs: whereArgs,
@@ -427,8 +428,8 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   @override
-  Future<List<Map>> tableNames() async {
-    List<Map> rec;
+  Future<List<Map<String, dynamic>>> tableNames() async {
+    List<Map<String, dynamic>> rec;
     try {
       rec = await _dbInt!.tableNames();
       _dbError.clear();
@@ -441,8 +442,8 @@ abstract class SQLiteDB implements db.DBInterface {
   }
 
   @override
-  Future<List<Map>> tableColumns(String table) async {
-    List<Map> rec;
+  Future<List<Map<String, dynamic>>> tableColumns(String table) async {
+    List<Map<String, dynamic>> rec;
     try {
       rec = await _dbInt!.tableColumns(table);
       _dbError.clear();
@@ -605,25 +606,25 @@ class _DBInterface {
 
   int? rowsUpdated;
 
-  Future<Map<String?, dynamic>> updateRec(
-      String? table, Map<String?, dynamic> fields) async {
+  Future<Map<String, dynamic>> updateRec(
+      String? table, Map<String, dynamic> fields) async {
     rowsUpdated = 0;
-    final String? keyFld = _keyFields[table];
+    final String keyFld = _keyFields[table]!;
     final keyValue = fields[keyFld];
     if (table == null) {
       /// We got nothing.
     } else if (keyValue == null) {
-      fields[keyFld] = await db!.insert(table, fields as Map<String, Object?>);
+      fields[keyFld] = await db!.insert(table, fields);
       rowsUpdated = 1;
     } else {
-      rowsUpdated = await db!.update(table, fields as Map<String, Object?>,
-          where: '$keyFld = ?', whereArgs: [keyValue]);
+      rowsUpdated = await db!
+          .update(table, fields, where: '$keyFld = ?', whereArgs: [keyValue]);
     }
     return fields;
   }
 
   Future<List<Map<String, dynamic>>> getRec(
-      String table, int id, List? fields) async {
+      String table, int id, List<String>? fields) async {
     if (db == null) {
       final open = await this.open();
       if (!open) {
@@ -631,9 +632,7 @@ class _DBInterface {
       }
     }
     return db!.query(table,
-        columns: fields as List<String>?,
-        where: '${_keyFields[table]} = ?',
-        whereArgs: [id]);
+        columns: fields, where: '${_keyFields[table]} = ?', whereArgs: [id]);
   }
 
   Future<int> delete(String table, int id) async {
@@ -709,9 +708,9 @@ class _DBInterface {
 
   Future<List<Map<String, dynamic>>> query(String table,
       {bool? distinct = false,
-      List<String?>? columns,
+      List<String>? columns,
       String? where,
-      List? whereArgs,
+      List<Object?>? whereArgs,
       String? groupBy,
       String? having,
       String? orderBy,
@@ -722,32 +721,20 @@ class _DBInterface {
       if (!open) {
         return Future.value([{}]);
       }
-      return db!.query(
-        table,
-        distinct: distinct,
-        where: where,
-        whereArgs: whereArgs,
-        groupBy: groupBy,
-        having: having,
-        orderBy: orderBy,
-        limit: limit,
-        offset: offset,
-      );
-    } else {
-      final cols = columns ?? _fields[table];
-      return db!.query(
-        table,
-        distinct: distinct,
-        columns: cols as List<String>?,
-        where: where,
-        whereArgs: whereArgs,
-        groupBy: groupBy,
-        having: having,
-        orderBy: orderBy,
-        limit: limit,
-        offset: offset,
-      );
     }
+    List<String>? cols = columns ?? _fields[table];
+    return db!.query(
+      table,
+      distinct: distinct,
+      columns: cols,
+      where: where,
+      whereArgs: whereArgs,
+      groupBy: groupBy,
+      having: having,
+      orderBy: orderBy,
+      limit: limit,
+      offset: offset,
+    );
   }
 
   Future<List<Map<String, dynamic>>> tableNames() async {
@@ -770,10 +757,10 @@ class _DBInterface {
     return db!.rawQuery("pragma table_info('$table')");
   }
 
-  Future<List<String?>> tableList() async {
+  Future<List<String>> tableList() async {
     final List<Map<String, dynamic>> tables = await tableNames();
 
-    final List<String?> list = [];
+    final List<String> list = [];
 
     // Include android metadata table as well with 0; iOS then works.
     for (var i = 0; i < tables.length; i++) {
@@ -782,30 +769,31 @@ class _DBInterface {
     return list;
   }
 
-  final Map<String?, List> _fields = {};
+  final Map<String, List<String>> _fields = {};
 
-  final Map<String?, String?> _keyFields = {};
+  final Map<String, String?> _keyFields = {};
 
-  final Map<String?, Map<String?, dynamic>> _newRec = {};
+  final Map<String, Map<String, dynamic>> _newRec = {};
 
   Future<void> tableFields() async {
     dynamic fldValue;
-    String? keyField;
-    String? type;
+    String keyField;
+    String type;
 
     final tables = await tableList();
 
     for (final table in tables) {
+      //
       final columns = await tableColumns(table);
 
-      final List<String?> fields = [];
+      final List<String> fields = [];
 
       /// ROWID is automatically added to all SQLite tables by default, and is a unique integer,
       keyField = 'rowid';
 
       fields.add(keyField);
 
-      final Map<String?, dynamic> fieldValues = {};
+      final Map<String, dynamic> fieldValues = {};
 
       fieldValues[keyField] = null;
 
@@ -826,7 +814,7 @@ class _DBInterface {
           if (col['dflt_value'] != null) {
             fldValue = col['dflt_value'];
 
-            switch (type!.toLowerCase()) {
+            switch (type.toLowerCase()) {
               case 'long':
                 {
                   fldValue = double.parse(fldValue);
@@ -840,7 +828,7 @@ class _DBInterface {
             fieldValues[col['name']] = fldValue;
           } else {
             if (col['notnull'] == 1) {
-              switch (type!.toLowerCase()) {
+              switch (type.toLowerCase()) {
                 case 'long':
                   {
                     fldValue = 0.0;
@@ -866,7 +854,7 @@ class _DBInterface {
 
       _fields[table] = fields;
 
-      _newRec[table] = <String?, dynamic>{};
+      _newRec[table] = <String, dynamic>{};
 
       /// Make a copy as an 'empty' record.
       _newRec[table]!
@@ -874,17 +862,21 @@ class _DBInterface {
     }
   }
 
-  Future<String?> get localPath async {
-    if (_path == null) {
+  Future<String> get localPath async {
+    String path;
+    if (_path != null) {
+      path = _path!;
+    } else {
       try {
         final Directory directory = await getApplicationDocumentsDirectory();
-        _path = directory.path;
+        path = directory.path;
       } catch (e) {
-        _path = '';
+        path = '';
         ex = e is Exception ? e : Exception(e.toString());
       }
+      _path = path;
     }
-    return _path;
+    return path;
   }
 
   String? _path;
