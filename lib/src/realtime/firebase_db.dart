@@ -1,25 +1,10 @@
-///
-/// Copyright (C) 2020 Andrious Solutions
-///
-/// Licensed under the Apache License, Version 2.0 (the "License");
-/// you may not use this file except in compliance with the License.
-/// You may obtain a copy of the License at
-///
-///    http://www.apache.org/licenses/LICENSE-2.0
-///
-/// Unless required by applicable law or agreed to in writing, software
-/// distributed under the License is distributed on an "AS IS" BASIS,
-/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-/// See the License for the specific language governing permissions and
-/// limitations under the License.
-///
-///          Created  19 Feb 2020
-///
-///
-
-import 'dart:io' show InternetAddress, SocketException;
+// Copyright 2021 Andrious Solutions Ltd. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 import 'dart:async';
+
+import 'dart:io' show InternetAddress, SocketException;
 
 import 'package:flutter/material.dart';
 
@@ -69,12 +54,24 @@ class FireBaseDB {
 
     _dbReference = _db?.reference();
 
-    if (once != null) _onceListeners.add(once);
-    if (onChildAdded != null) _addedListeners.add(onChildAdded);
-    if (onChildRemoved != null) _removedListeners.add(onChildRemoved);
-    if (onChildChanged != null) _changedListeners.add(onChildChanged);
-    if (onChildMoved != null) _movedListeners.add(onChildMoved);
-    if (onValue != null) _valueListeners.add(onValue);
+    if (once != null) {
+      _onceListeners.add(once);
+    }
+    if (onChildAdded != null) {
+      _addedListeners.add(onChildAdded);
+    }
+    if (onChildRemoved != null) {
+      _removedListeners.add(onChildRemoved);
+    }
+    if (onChildChanged != null) {
+      _changedListeners.add(onChildChanged);
+    }
+    if (onChildMoved != null) {
+      _movedListeners.add(onChildMoved);
+    }
+    if (onValue != null) {
+      _valueListeners.add(onValue);
+    }
 
     // this errors with 'permission denied??'
 //    _setEvents(_dbReference);
@@ -83,19 +80,19 @@ class FireBaseDB {
   }
   static FireBaseDB? _this;
 
-  Set<OnceCallback> _onceListeners = Set();
-  Set<EventCallback> _addedListeners = Set();
-  Set<StreamSubscription<Event>> _addedSubscription = Set();
-  Set<EventCallback> _removedListeners = Set();
-  Set<StreamSubscription<Event>> _removedSubscription = Set();
-  Set<EventCallback> _changedListeners = Set();
-  Set<StreamSubscription<Event>> _changedSubscription = Set();
-  Set<EventCallback> _movedListeners = Set();
-  Set<StreamSubscription<Event>> _movedSubscription = Set();
-  Set<EventCallback> _valueListeners = Set();
-  Set<StreamSubscription<Event>> _valueSubscription = Set();
+  final Set<OnceCallback> _onceListeners = {};
+  final Set<EventCallback> _addedListeners = {};
+  final Set<StreamSubscription<Event>> _addedSubscription = {};
+  final Set<EventCallback> _removedListeners = {};
+  final Set<StreamSubscription<Event>> _removedSubscription = {};
+  final Set<EventCallback> _changedListeners = {};
+  final Set<StreamSubscription<Event>> _changedSubscription = {};
+  final Set<EventCallback> _movedListeners = {};
+  final Set<StreamSubscription<Event>> _movedSubscription = {};
+  final Set<EventCallback> _valueListeners = {};
+  final Set<StreamSubscription<Event>> _valueSubscription = {};
 
-  dispose() {
+  void dispose() {
     //
     goOffline();
     _db = null;
@@ -110,25 +107,29 @@ class FireBaseDB {
 
     _app = null;
 
-    _addedSubscription.forEach((f) {
-      f.cancel();
-    });
+    for (final sub in _addedSubscription) {
+      sub.cancel();
+    }
     _addedSubscription.clear();
-    _removedSubscription.forEach((f) {
-      f.cancel();
-    });
+
+    for (final sub in _removedSubscription) {
+      sub.cancel();
+    }
     _removedSubscription.clear();
-    _changedSubscription.forEach((f) {
-      f.cancel();
-    });
+
+    for (final sub in _changedSubscription) {
+      sub.cancel();
+    }
     _changedSubscription.clear();
-    _movedSubscription.forEach((f) {
-      f.cancel();
-    });
+
+    for (final sub in _movedSubscription) {
+      sub.cancel();
+    }
     _movedSubscription.clear();
-    _valueSubscription.forEach((f) {
-      f.cancel();
-    });
+
+    for (final sub in _valueSubscription) {
+      sub.cancel();
+    }
     _valueSubscription.clear();
   }
 
@@ -149,44 +150,65 @@ class FireBaseDB {
   FirebaseApp? _app;
   FirebaseApp? get app => _app;
 
-  set onceListener(OnceCallback once) {
-    if (once != null) _onceListeners.add(once);
+  //ignore: avoid_setters_without_getters
+  set onceListener(OnceCallback? once) {
+    if (once != null) {
+      _onceListeners.add(once);
+    }
   }
 
-  set addedListener(EventCallback onChildAdded) {
-    if (onChildAdded != null) _addedListeners.add(onChildAdded);
+  //ignore: avoid_setters_without_getters
+  set addedListener(EventCallback? onChildAdded) {
+    if (onChildAdded != null) {
+      _addedListeners.add(onChildAdded);
+    }
   }
 
   bool onChildAdded(DatabaseReference ref, EventCallback listener) {
-    StreamSubscription<Event> sub = ref.onChildAdded.listen((Event event) {
+    final StreamSubscription<Event> sub =
+        ref.onChildAdded.listen((Event event) {
       listener(event);
-    }, onError: (error, StackTrace stackTrace) {
+    }, onError: (Object error, StackTrace stackTrace) {
       setError(error);
     }, onDone: () {
-      print('done');
+//      print('done');
     });
     bool added = _addedSubscription.add(sub);
     if (!added) {
       added = _addedSubscription.remove(sub);
-      if (added) added = _addedSubscription.add(sub);
+      if (added) {
+        added = _addedSubscription.add(sub);
+      }
     }
     return added;
   }
 
-  set removedListener(EventCallback onChildRemoved) {
-    if (onChildRemoved != null) _removedListeners.add(onChildRemoved);
+  //ignore: avoid_setters_without_getters
+  set removedListener(EventCallback? onChildRemoved) {
+    if (onChildRemoved != null) {
+      _removedListeners.add(onChildRemoved);
+    }
   }
 
-  set changedListener(EventCallback onChildChanged) {
-    if (onChildChanged != null) _changedListeners.add(onChildChanged);
+  //ignore: avoid_setters_without_getters
+  set changedListener(EventCallback? onChildChanged) {
+    if (onChildChanged != null) {
+      _changedListeners.add(onChildChanged);
+    }
   }
 
-  set movedListener(EventCallback onChildMoved) {
-    if (onChildMoved != null) _movedListeners.add(onChildMoved);
+  //ignore: avoid_setters_without_getters
+  set movedListener(EventCallback? onChildMoved) {
+    if (onChildMoved != null) {
+      _movedListeners.add(onChildMoved);
+    }
   }
 
-  set valueListener(EventCallback onValue) {
-    if (onValue != null) _valueListeners.add(onValue);
+  //ignore: avoid_setters_without_getters
+  set valueListener(EventCallback? onValue) {
+    if (onValue != null) {
+      _valueListeners.add(onValue);
+    }
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -204,6 +226,7 @@ class FireBaseDB {
   bool? get isPersistenceEnabled => _persistenceEnabled;
   bool? _persistenceEnabled;
 
+  //ignore:avoid_positional_boolean_parameters
   Future<bool> setPersistenceEnabled(bool enabled) async {
     _persistenceEnabled = await _db?.setPersistenceEnabled(enabled);
 
@@ -223,7 +246,7 @@ class FireBaseDB {
     }
 
     try {
-      _db!.goOnline();
+      await _db!.goOnline();
     } finally {}
 
     return this;
@@ -257,7 +280,7 @@ class FireBaseDB {
 //  }
 
   Exception? _ex;
-  String get message => _ex?.toString() ?? "";
+  String get message => _ex?.toString() ?? '';
   bool get inError => _ex != null;
   bool get hasError => _ex != null;
 
@@ -271,70 +294,72 @@ class FireBaseDB {
 
   /// Get the last error but clear it.
   Exception? getError() {
-    Exception? ex = _ex;
+    final Exception? ex = _ex;
     _ex = null;
     return ex;
   }
 
-  void setEvents(DatabaseReference ref) {
-    if (ref == null) return;
-
+  void setEvents(DatabaseReference? ref) {
+    if (ref == null) {
+      return;
+    }
     ref.once().then((DataSnapshot data) {
-      for (OnceCallback listener in _onceListeners) {
+      for (final OnceCallback listener in _onceListeners) {
         listener(data);
       }
-    }).catchError((error) {
+      //ignore: unnecessary_lambdas
+    }).catchError((Object error) {
       setError(error);
     });
 
     _addedSubscription.add(ref.onChildAdded.listen((Event event) {
-      for (EventCallback listener in _addedListeners) {
+      for (final EventCallback listener in _addedListeners) {
         listener(event);
       }
-    }, onError: (error, StackTrace stackTrace) {
+    }, onError: (Object error, StackTrace stackTrace) {
       setError(error);
     }, onDone: () {
-      print('done');
+//      print('done');
     }));
 
     _removedSubscription.add(ref.onChildRemoved.listen((Event event) {
-      for (EventCallback listener in _removedListeners) {
+      for (final EventCallback listener in _removedListeners) {
         listener(event);
       }
-    }, onError: (error, StackTrace stackTrace) {
+    }, onError: (Object error, StackTrace stackTrace) {
       setError(error);
     }, onDone: () {
-      print('done');
+//      print('done');
     }));
 
     _changedSubscription.add(ref.onChildChanged.listen((Event event) {
-      for (EventCallback listener in _changedListeners) {
+      for (final EventCallback listener in _changedListeners) {
         listener(event);
       }
-    }, onError: (error, StackTrace stackTrace) {
+    }, onError: (Object error, StackTrace stackTrace) {
       setError(error);
     }, onDone: () {
-      print('done');
+//      print('done');
     }));
 
     _movedSubscription.add(ref.onChildMoved.listen((Event event) {
-      for (EventCallback listener in _movedListeners) {
+      for (final EventCallback listener in _movedListeners) {
         listener(event);
       }
-    }, onError: (error, StackTrace stackTrace) {
+    }, onError: (Object error, StackTrace stackTrace) {
       setError(error);
     }, onDone: () {
-      print('done');
+//      print('done');
     }));
 
     _valueSubscription.add(ref.onValue.listen((Event event) {
-      for (EventCallback listener in _valueListeners) {
+      for (final EventCallback listener in _valueListeners) {
         listener(event);
       }
-    }, onError: (error, StackTrace stackTrace) {
+    }, onError: (Object error, StackTrace stackTrace) {
       setError(error);
     }, onDone: () {
-      print('done');
+//      print('done');
     }));
   }
 }
@@ -343,7 +368,8 @@ class Is {
   static Future<bool> online() async {
     bool online;
     try {
-      List<InternetAddress> result = await InternetAddress.lookup('google.com');
+      final List<InternetAddress> result =
+          await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         online = true;
       } else {

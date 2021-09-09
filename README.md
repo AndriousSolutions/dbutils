@@ -16,7 +16,7 @@ Instead, always go up to the '**Major**' value in the semantic version number wh
 And so, in this case, add this to your package's pubspec.yaml file instead:
 ```javascript
 dependencies:
-  dbutils:^3.0.0
+  dbutils:^4.0.0
 ```
 
 ### What's on the Table?

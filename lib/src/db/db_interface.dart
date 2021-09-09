@@ -1,76 +1,77 @@
-///
-/// Copyright (C) 2018  Andrious Solutions
-///
-/// Licensed under the Apache License, Version 2.0 (the "License");
-/// you may not use this file except in compliance with the License.
-/// You may obtain a copy of the License at
-///
-///    http://www.apache.org/licenses/LICENSE-2.0
-///
-/// Unless required by applicable law or agreed to in writing, software
-/// distributed under the License is distributed on an "AS IS" BASIS,
-/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-/// See the License for the specific language governing permissions and
-/// limitations under the License.
-///
-///          Created  14 May 2018
-///
-/// Github: https://github.com/AndriousSolutions/dbutils
-///
+// Copyright 2021 Andrious Solutions Ltd. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
+/// For a demonstration, class SQLiteDB implements DBInterface
 abstract class DBInterface {
+  /// Contains the last exception if any
   Exception? error;
 
-  // TODO: implement name
+  /// Name of the database
   String get name => throw UnimplementedError();
 
-  // TODO: implement db
+  /// Database object
   dynamic get db => throw UnimplementedError();
 
-  // TODO: implement version
+  /// Current Database version number
+  /// Update with any data tables changes.
   int get version => throw UnimplementedError();
 
+  /// Called in the initState() function or the FutureBuilder(future: parameter
+  /// Usually calls the open() function to open the Database
   Future<bool> init() {
-    // TODO: implement init
     throw UnimplementedError();
   }
 
+  /// Opens the Database
   Future<bool> open() {
-    // TODO: implement open
     throw UnimplementedError();
   }
 
+  /// Close the Database
   void close() {
-    // TODO: implement close
     throw UnimplementedError();
   }
 
+  /// Delete a data table's record by its primary key
+  /// Returns the number of records effected.
   Future<int> delete(String table, int id) {
-    // TODO: implement delete
     throw UnimplementedError();
   }
 
+  /// Delete the specified record by using a where clause
+  /// from the specified data table
+  Future<int> deleteRec(String table,
+      {String? where, List<dynamic>? whereArgs}) {
+    throw UnimplementedError();
+  }
+
+  /// Called in a State object's dispose() function.
+  /// Usually call close() function to close the Database.
+  /// Leave the word 'dispose' to subclasses. gp
   void disposed() {
     // TODO: implement disposed
   }
 
-  // TODO: implement message
+  /// Return any SQL or Database error message
   String get message => throw UnimplementedError();
 
-  // TODO: implement fields
-  Map<String?, List> get fields => throw UnimplementedError();
+  /// Contains a list of columns of each table
+  Map<String, List<String>> get fields => throw UnimplementedError();
 
+  /// Return a specific record by primary key from a specified data table
   Future<List<Map<String, dynamic>>> getRecord(String table, int id) {
-    // TODO: implement getRecord
     throw UnimplementedError();
   }
 
+  /// Return the specified fields from a specified record by primary key
+  /// from a specified data table
   Future<List<Map<String, dynamic>>> getRow(
       String table, int id, Map<String, dynamic> fields) {
-    // TODO: implement getRow
     throw UnimplementedError();
   }
 
+  /// Return a List of records from a specified data table.
   Future<List<Map<String, dynamic>>> getTable(String table,
       {bool? distinct,
       String? where,
@@ -80,31 +81,33 @@ abstract class DBInterface {
       String? orderBy,
       int? limit,
       int? offset}) {
-    // TODO: implement getTable
     throw UnimplementedError();
   }
 
+  /// Return the primary key name from the specified data table
   Future<String?> keyField(String table) {
-    // TODO: implement keyField
     throw UnimplementedError();
   }
 
+  /// Return a List of records from a query result
   List<Map<String, dynamic>> mapQuery(List<Map<String, dynamic>> query) {
-    // TODO: implement mapQuery
     throw UnimplementedError();
   }
 
+  /// Create a new 'empty' record from a specified data table
+  /// Specified the fields to come from the data table
   Map<String?, dynamic> newRec(String table, [Map<String, dynamic>? data]) {
-    // TODO: implement newRec
     throw UnimplementedError();
   }
 
-  // TODO: implement newrec
-  Map<String?, Map<String, dynamic>> get newrec => throw UnimplementedError();
+  /// Create a new 'empty' record from a specified data table
+  Map<String, Map<String, dynamic>> get newrec => throw UnimplementedError();
 
-  // TODO: implement noError
+  /// Returns true if there was not an error recently.
   bool get noError => throw UnimplementedError();
 
+  /// Returns a list of record from the specified data table
+  /// based on its where clause
   Future<List<Map<String, dynamic>>> query(String table,
       {List<String>? columns,
       bool? distinct,
@@ -115,87 +118,103 @@ abstract class DBInterface {
       String? orderBy,
       int? limit,
       int? offset}) {
-    // TODO: implement query
     throw UnimplementedError();
   }
 
-  Future<int> rawDelete(String sqlStmt, [List? arguments]) {
-    // TODO: implement rawDelete
+  /// Executes a raw SQL DELETE query and returns the
+  /// number of changes made.
+  ///
+  /// ```
+  /// int count = await database
+  ///   .rawDelete('DELETE FROM Test WHERE name = ?', ['another name']);
+  ///
+  Future<int> rawDelete(String sqlStmt, [List<Object?>? arguments]) {
     throw UnimplementedError();
   }
 
-  Future<int> rawInsert(String sqlStmt, [List? arguments]) {
-    // TODO: implement rawInsert
+  /// Executes a raw SQL INSERT query and returns the last inserted row ID.
+  Future<int> rawInsert(String sqlStmt, [List<Object?>? arguments]) {
     throw UnimplementedError();
   }
 
+  /// Executes a raw SQL SELECT query and returns a list
+  /// of the rows that were found.
   Future<List<Map<String, dynamic>>> rawQuery(String sqlStmt) {
-    // TODO: implement rawQuery
     throw UnimplementedError();
   }
 
+  /// Executes a raw SQL UPDATE query and returns
+  /// the number of changes made.
+  ///
+  /// ```
+  /// int count = await database.rawUpdate(
+  ///   'UPDATE Test SET name = ?, value = ? WHERE name = ?',
+  ///   ['updated name', '9876', 'some name']);
+  /// ```
   Future<int> rawUpdate(String sqlStmt, [List? arguments]) {
-    // TODO: implement rawUpdate
     throw UnimplementedError();
   }
 
-  // TODO: implement recsUpdated
+  /// The of records updated in the last Database operation
   int? get recsUpdated => throw UnimplementedError();
 
+  /// Initiate a Database transaction
+  /// All sequences are rolled back in one among them fails.
   Future<void> runTxn(void Function() func) {
-    // TODO: implement runTxn
     throw UnimplementedError();
   }
 
-  Future<Map<String?, dynamic>> saveMap(
-      String table, Map<String, dynamic> values) {
-    // TODO: implement saveMap
+  /// Save the specified record values to the specified data table
+  /// Either parameters may be null
+  Future<Map<String, dynamic>> saveMap(
+      String? table, Map<String, dynamic>? values) {
     throw UnimplementedError();
   }
 
+  /// Save the specified record values to the specified data table
+  /// Neither parameters can be null
   Future<Map<String, dynamic>> saveRec(
       String table, Map<String, dynamic> fldValues) {
-    // TODO: implement saveRec
     throw UnimplementedError();
   }
 
-  Future<List<Map>> tableColumns(String table) {
-    // TODO: implement tableColumns
+  /// Return the field names of the specified data table
+  Future<List<Map<String, dynamic>>> tableColumns(String table) {
     throw UnimplementedError();
   }
 
-  Future<List<Map>> tableNames() {
-    // TODO: implement tableNames
+  /// Return a list of data tables in the Database
+  Future<List<Map<String, dynamic>>> tableNames() {
     throw UnimplementedError();
   }
 
-  Future<Map<String?, dynamic>> updateRec(
+  /// Update the specified record from the specified data table
+  Future<Map<String, dynamic>> updateRec(
       String table, Map<String, dynamic> fields) {
-    // TODO: implement updateRec
     throw UnimplementedError();
   }
 
-  // TODO: implement inError
+  /// Indicate if there was a recent Database error
   bool get inError => throw UnimplementedError();
 
-  // TODO: implement isDatabaseClosedError
-  bool get isDatabaseClosedError => throw UnimplementedError();
+  /// Was there a 'Database Closed' error
+  bool get isDatabaseClosedError => false;
 
-  // TODO: implement isDatabaseException
-  bool get isDatabaseException => throw UnimplementedError();
+  /// Was there a 'Database Exception' error
+  bool get isDatabaseException => false;
 
-  // TODO: implement isNoSuchTableError
-  bool get isNoSuchTableError => throw UnimplementedError();
+  /// Was there a 'No Such Table' error
+  bool get isNoSuchTableError => false;
 
-  // TODO: implement isOpenFailedError
-  bool get isOpenFailedError => throw UnimplementedError();
+  /// Was there a 'Open Failed' error
+  bool get isOpenFailedError => false;
 
-  // TODO: implement isReadOnlyError
-  bool get isReadOnlyError => throw UnimplementedError();
+  /// Was there a 'ReadOnly' error
+  bool get isReadOnlyError => false;
 
-  // TODO: implement isSyntaxError
-  bool get isSyntaxError => throw UnimplementedError();
+  /// Was there a 'Syntax' error
+  bool get isSyntaxError => false;
 
-  // TODO: implement isUniqueConstraintError
-  bool get isUniqueConstraintError => throw UnimplementedError();
+  /// Was there a 'Unique Constraint' error
+  bool get isUniqueConstraintError => false;
 }

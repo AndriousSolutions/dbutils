@@ -1,4 +1,8 @@
 
+## 4.0.1
+ September 08, 2021
+- Included more documentation
+
 ## 4.0.0
  September 08, 2021
 - Included an example app
