@@ -410,8 +410,7 @@ abstract class SQLiteDB implements db.DBInterface {
   List<Map<String, dynamic>> mapQuery(List<Map<String, dynamic>> query) {
     final List<Map<String, dynamic>> mapList = [];
     for (final row in query) {
-      final Map<String, dynamic> map =
-          row.map((key, value) => MapEntry(key, value));
+      final Map<String, dynamic> map = row.map(MapEntry.new);
       mapList.add(map);
     }
     return mapList;

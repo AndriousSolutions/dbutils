@@ -6,19 +6,19 @@ import 'dart:async';
 
 import 'dart:io' show InternetAddress, SocketException;
 
-import 'package:flutter/material.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:firebase_database/firebase_database.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
+import 'package:firebase_database/firebase_database.dart';
+
+import 'package:flutter/material.dart';
+
 import 'package:flutter/widgets.dart' show AppLifecycleState;
 
-typedef OnceCallback = void Function(DataSnapshot data);
+typedef OnceCallback = void Function(DatabaseEvent event);
 
-typedef EventCallback = void Function(Event event);
+typedef EventCallback = void Function(DatabaseEvent event);
 
 class FireBaseDB {
   factory FireBaseDB.init({
@@ -52,7 +52,7 @@ class FireBaseDB {
 
     _db = FirebaseDatabase.instance;
 
-    _dbReference = _db?.reference();
+    _dbReference = _db?.ref();
 
     if (once != null) {
       _onceListeners.add(once);
@@ -82,15 +82,15 @@ class FireBaseDB {
 
   final Set<OnceCallback> _onceListeners = {};
   final Set<EventCallback> _addedListeners = {};
-  final Set<StreamSubscription<Event>> _addedSubscription = {};
+  final Set<StreamSubscription<DatabaseEvent>> _addedSubscription = {};
   final Set<EventCallback> _removedListeners = {};
-  final Set<StreamSubscription<Event>> _removedSubscription = {};
+  final Set<StreamSubscription<DatabaseEvent>> _removedSubscription = {};
   final Set<EventCallback> _changedListeners = {};
-  final Set<StreamSubscription<Event>> _changedSubscription = {};
+  final Set<StreamSubscription<DatabaseEvent>> _changedSubscription = {};
   final Set<EventCallback> _movedListeners = {};
-  final Set<StreamSubscription<Event>> _movedSubscription = {};
+  final Set<StreamSubscription<DatabaseEvent>> _movedSubscription = {};
   final Set<EventCallback> _valueListeners = {};
-  final Set<StreamSubscription<Event>> _valueSubscription = {};
+  final Set<StreamSubscription<DatabaseEvent>> _valueSubscription = {};
 
   void dispose() {
     //
@@ -165,8 +165,8 @@ class FireBaseDB {
   }
 
   bool onChildAdded(DatabaseReference ref, EventCallback listener) {
-    final StreamSubscription<Event> sub =
-        ref.onChildAdded.listen((Event event) {
+    final StreamSubscription<DatabaseEvent> sub =
+        ref.onChildAdded.listen((DatabaseEvent event) {
       listener(event);
     }, onError: (Object error, StackTrace stackTrace) {
       setError(error);
@@ -227,16 +227,13 @@ class FireBaseDB {
   bool? _persistenceEnabled;
 
   //ignore:avoid_positional_boolean_parameters
-  Future<bool> setPersistenceEnabled(bool enabled) async {
-    _persistenceEnabled = await _db?.setPersistenceEnabled(enabled);
-
-    _persistenceEnabled = _persistenceEnabled ?? false;
-
-    return Future.value(_persistenceEnabled);
+  bool setPersistenceEnabled(bool enabled) {
+    _db?.setPersistenceEnabled(enabled);
+    return _persistenceEnabled = enabled;
   }
 
-  Future<bool> setPersistenceCacheSizeBytes(int cacheSize) =>
-      _db?.setPersistenceCacheSizeBytes(cacheSize) ?? Future.value(false);
+  void setPersistenceCacheSizeBytes(int cacheSize) =>
+      _db?.setPersistenceCacheSizeBytes(cacheSize);
 
   Future<FireBaseDB> open() async {
     final online = await isOnline();
@@ -303,16 +300,16 @@ class FireBaseDB {
     if (ref == null) {
       return;
     }
-    ref.once().then((DataSnapshot data) {
+    ref.once().then((DatabaseEvent event) {
       for (final OnceCallback listener in _onceListeners) {
-        listener(data);
+        listener(event);
       }
       //ignore: unnecessary_lambdas
     }).catchError((Object error) {
       setError(error);
     });
 
-    _addedSubscription.add(ref.onChildAdded.listen((Event event) {
+    _addedSubscription.add(ref.onChildAdded.listen((DatabaseEvent event) {
       for (final EventCallback listener in _addedListeners) {
         listener(event);
       }
@@ -322,7 +319,7 @@ class FireBaseDB {
 //      print('done');
     }));
 
-    _removedSubscription.add(ref.onChildRemoved.listen((Event event) {
+    _removedSubscription.add(ref.onChildRemoved.listen((DatabaseEvent event) {
       for (final EventCallback listener in _removedListeners) {
         listener(event);
       }
@@ -332,7 +329,7 @@ class FireBaseDB {
 //      print('done');
     }));
 
-    _changedSubscription.add(ref.onChildChanged.listen((Event event) {
+    _changedSubscription.add(ref.onChildChanged.listen((DatabaseEvent event) {
       for (final EventCallback listener in _changedListeners) {
         listener(event);
       }
@@ -342,7 +339,7 @@ class FireBaseDB {
 //      print('done');
     }));
 
-    _movedSubscription.add(ref.onChildMoved.listen((Event event) {
+    _movedSubscription.add(ref.onChildMoved.listen((DatabaseEvent event) {
       for (final EventCallback listener in _movedListeners) {
         listener(event);
       }
@@ -352,7 +349,7 @@ class FireBaseDB {
 //      print('done');
     }));
 
-    _valueSubscription.add(ref.onValue.listen((Event event) {
+    _valueSubscription.add(ref.onValue.listen((DatabaseEvent event) {
       for (final EventCallback listener in _valueListeners) {
         listener(event);
       }

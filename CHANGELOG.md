@@ -1,4 +1,11 @@
 
+## 5.0.0
+- firebase_database: ^9.0.0 from 7.1.0
+- BREAKING: setPersistenceEnabled() is now synchronous.
+- BREAKING: setPersistenceCacheSizeBytes() is now synchronous.
+- DatabaseReference reference() deprecated in favor of DatabaseReference ref()
+- sdk: '>=2.15.1 <3.0.0'
+
 ## 4.0.1
  September 08, 2021
 - Included more documentation

@@ -32,6 +32,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
             child: Column(
               children: [
                 TextFormField(
+                  key: const Key('firstname'),
                   initialValue: widget.employee.isEmpty
                       ? null
                       : widget.employee['firstname'],
@@ -42,6 +43,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                   onSaved: (val) => widget.employee['firstname'] = val,
                 ),
                 TextFormField(
+                  key: const Key('lastname'),
                   initialValue: widget.employee.isEmpty
                       ? null
                       : widget.employee['lastname'],
@@ -56,6 +58,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> {
                   child: Container(
                     margin: const EdgeInsets.only(top: 10),
                     child: ElevatedButton(
+                      key: const Key('Save'),
                       onPressed: _save,
                       child: const Text('Save'),
                     ),

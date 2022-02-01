@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 import 'src/employee_list.dart';
 
@@ -17,6 +16,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const EmployeeList(),
+        home: const EmployeeList(key: Key('EmployeeList')),
       );
 }
