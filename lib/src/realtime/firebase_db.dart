@@ -16,11 +16,15 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/widgets.dart' show AppLifecycleState;
 
+///
 typedef OnceCallback = void Function(DatabaseEvent event);
 
+///
 typedef EventCallback = void Function(DatabaseEvent event);
 
+///
 class FireBaseDB {
+  /// Optionally initialize the Callback functions.
   factory FireBaseDB.init({
     OnceCallback? once,
     EventCallback? onChildAdded,
@@ -92,6 +96,7 @@ class FireBaseDB {
   final Set<EventCallback> _valueListeners = {};
   final Set<StreamSubscription<DatabaseEvent>> _valueSubscription = {};
 
+  /// Clear the memory
   void dispose() {
     //
     goOffline();
@@ -131,25 +136,35 @@ class FireBaseDB {
       sub.cancel();
     }
     _valueSubscription.clear();
+
+    _this = null;
   }
 
+  /// Boolean indicator if online or not.
   Future<bool> isOnline() => Is.online();
 
   late FirebaseAuth _auth;
 
-  User? _user;
+  /// The User object
   User? get user => _user;
+  User? _user;
 
-  FirebaseDatabase? _db;
+  /// Firebase Database object
   FirebaseDatabase? get db => _db;
+
+  /// Firebase Database object
   FirebaseDatabase? get instance => _db;
+  FirebaseDatabase? _db;
 
-  DatabaseReference? _dbReference;
+  /// Database Reference
   DatabaseReference? reference() => _dbReference;
+  DatabaseReference? _dbReference;
 
-  FirebaseApp? _app;
+  /// Firebase App
   FirebaseApp? get app => _app;
+  FirebaseApp? _app;
 
+  /// Add a 'once' listener
   //ignore: avoid_setters_without_getters
   set onceListener(OnceCallback? once) {
     if (once != null) {
@@ -157,6 +172,7 @@ class FireBaseDB {
     }
   }
 
+  /// Set 'record added' listener.
   //ignore: avoid_setters_without_getters
   set addedListener(EventCallback? onChildAdded) {
     if (onChildAdded != null) {
@@ -164,6 +180,7 @@ class FireBaseDB {
     }
   }
 
+  /// Add a Subscription
   bool onChildAdded(DatabaseReference ref, EventCallback listener) {
     final StreamSubscription<DatabaseEvent> sub =
         ref.onChildAdded.listen((DatabaseEvent event) {
@@ -183,6 +200,7 @@ class FireBaseDB {
     return added;
   }
 
+  /// Set a 'record removed' listener
   //ignore: avoid_setters_without_getters
   set removedListener(EventCallback? onChildRemoved) {
     if (onChildRemoved != null) {
@@ -190,6 +208,7 @@ class FireBaseDB {
     }
   }
 
+  /// Set a 'record changed' listener
   //ignore: avoid_setters_without_getters
   set changedListener(EventCallback? onChildChanged) {
     if (onChildChanged != null) {
@@ -197,6 +216,7 @@ class FireBaseDB {
     }
   }
 
+  /// Set a 'record moved' listener
   //ignore: avoid_setters_without_getters
   set movedListener(EventCallback? onChildMoved) {
     if (onChildMoved != null) {
@@ -204,6 +224,7 @@ class FireBaseDB {
     }
   }
 
+  /// Set a 'value changed' listener
   //ignore: avoid_setters_without_getters
   set valueListener(EventCallback? onValue) {
     if (onValue != null) {
@@ -211,6 +232,7 @@ class FireBaseDB {
     }
   }
 
+  ///
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       goOffline();
@@ -219,22 +241,28 @@ class FireBaseDB {
     }
   }
 
+  /// Returns Data Reference by path name
   DatabaseReference? dataRef(String name) => _dbReference?.child(name);
 
+  /// Returns the Firebase database's url path.
   String get databaseURL => _db?.databaseURL ?? 'unknown';
 
+  /// Indicates if persisted to on-device (disk) storage even on app restart
   bool? get isPersistenceEnabled => _persistenceEnabled;
   bool? _persistenceEnabled;
 
+  /// Sets persisted on-device (disk) storage
   //ignore:avoid_positional_boolean_parameters
   bool setPersistenceEnabled(bool enabled) {
     _db?.setPersistenceEnabled(enabled);
     return _persistenceEnabled = enabled;
   }
 
+  ///
   void setPersistenceCacheSizeBytes(int cacheSize) =>
       _db?.setPersistenceCacheSizeBytes(cacheSize);
 
+  ///
   Future<FireBaseDB> open() async {
     final online = await isOnline();
     // No internet connection is available.
@@ -249,14 +277,21 @@ class FireBaseDB {
     return this;
   }
 
+  ///
   void close() {
     _db!.goOffline();
   }
 
+  /// Resumes our connection to the Firebase Database backend after a previous
+  /// [goOffline] call.
   Future<void>? goOnline() => _db?.goOnline();
 
+  /// Shuts down our connection to the Firebase Database backend until
+  /// [goOnline] is called.
   Future<void>? goOffline() => _db?.goOffline();
 
+  /// The Firebase Database client automatically queues writes and sends them to
+  /// the server at the earliest opportunity, depending on network connectivity.
   Future<void>? purgeOutstandingWrites() => _db?.purgeOutstandingWrites();
 
 //  DatabaseReference prevUserIdDBRef(){
@@ -276,11 +311,17 @@ class FireBaseDB {
 //    return ref;
 //  }
 
-  Exception? _ex;
+  ///
   String get message => _ex?.toString() ?? '';
-  bool get inError => _ex != null;
-  bool get hasError => _ex != null;
 
+  ///
+  bool get inError => _ex != null;
+
+  ///
+  bool get hasError => _ex != null;
+  Exception? _ex;
+
+  ///
   void setError(Object ex) {
     if (ex is! Exception) {
       _ex = Exception(ex.toString());
@@ -296,6 +337,7 @@ class FireBaseDB {
     return ex;
   }
 
+  ///
   void setEvents(DatabaseReference? ref) {
     if (ref == null) {
       return;
@@ -361,7 +403,10 @@ class FireBaseDB {
   }
 }
 
+// ignore: avoid_classes_with_only_static_members
+///
 class Is {
+  ///
   static Future<bool> online() async {
     bool online;
     try {
@@ -378,6 +423,7 @@ class Is {
     return online;
   }
 
+  ///
   static Future<bool> offline() => online().then((online) {
         return !online;
       });

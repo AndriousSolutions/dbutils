@@ -6,42 +6,42 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-@Deprecated('Use the class, FireStoreCollection, instead')
-class FireStoreDB {
-  FireStoreDB(String path) : _collection = FireStoreCollection(path);
-  final FireStoreCollection _collection;
-
-  CollectionReference? get collection => _collection.collection;
-
-  Future<User?> currentUser() async => _collection.currentUser();
-
-  String get uid => _collection.uid;
-
-  bool get inError => _collection.inError;
-
-  Future<bool> update(String path, Map<String, dynamic> data) async =>
-      _collection.update(path, data);
-
-  Future<String> add(Map<String, dynamic> data) async => _collection.add(data);
-
-  Future<bool> delete(String docId) async => _collection.delete(docId);
-
-  Future<Map<String, dynamic>> runTransaction(
-          TransactionHandler transactionHandler,
-          {Duration timeout = const Duration(seconds: 10)}) =>
-      _collection.runTransaction(transactionHandler, timeout: timeout);
-
-  // ignore: avoid_setters_without_getters
-  set ex(Exception ex) => _collection.ex = ex;
-
-  Exception setError(Object ex) => _collection.setError(ex);
-
-  Exception getError([Object? ex]) => _collection.getError(ex);
-}
+// @Deprecated('Use the class, FireStoreCollection, instead')
+// class FireStoreDB {
+//   FireStoreDB(String path) : _collection = FireStoreCollection(path);
+//   final FireStoreCollection _collection;
+//
+//   CollectionReference? get collection => _collection.collection;
+//
+//   Future<User?> currentUser() async => _collection.currentUser();
+//
+//   String get uid => _collection.uid;
+//
+//   bool get inError => _collection.inError;
+//
+//   Future<bool> update(String path, Map<String, dynamic> data) async =>
+//       _collection.update(path, data);
+//
+//   Future<String> add(Map<String, dynamic> data) async => _collection.add(data);
+//
+//   Future<bool> delete(String docId) async => _collection.delete(docId);
+//
+//   Future<Map<String, dynamic>> runTransaction(
+//           TransactionHandler transactionHandler,
+//           {Duration timeout = const Duration(seconds: 10)}) =>
+//       _collection.runTransaction(transactionHandler, timeout: timeout);
+//
+//   // ignore: avoid_setters_without_getters
+//   set ex(Exception ex) => _collection.ex = ex;
+//
+//   Exception setError(Object ex) => _collection.setError(ex);
+//
+//   Exception getError([Object? ex]) => _collection.getError(ex);
+// }
 
 /// todo: This has to be split up to a parent class.
 class FireStoreCollection {
-  //
+  /// Provide the 'path' of the Firebase database.
   FireStoreCollection(String path) {
     _auth = FirebaseAuth.instance;
     _user = _auth.currentUser;
@@ -52,6 +52,7 @@ class FireStoreCollection {
   late FirebaseFirestore _store;
   User? _user;
 
+  /// The Collection Reference object.
   CollectionReference? get collection => _collection;
   CollectionReference? _collection;
 
@@ -59,11 +60,14 @@ class FireStoreCollection {
   /// No longer async operation but we'll keep it backward-compatible.
   Future<User?> currentUser() async => _user ??= _auth.currentUser;
 
+  /// The User id
   String get uid => _user!.uid;
 
+  /// Indicator if in error.
   bool get inError => _ex != null;
   Exception? _ex;
 
+  /// Update the Firebase path with the provided Map object.
   Future<bool> update(String path, Map<String, dynamic> data) async {
     bool update = true;
     try {
@@ -81,6 +85,7 @@ class FireStoreCollection {
     return update;
   }
 
+  /// Add the provided Map object.
   Future<String> add(Map<String, dynamic> data) async {
     // ignore: avoid_as
     final User user = await (currentUser() as Future<User>);
@@ -94,6 +99,7 @@ class FireStoreCollection {
     });
   }
 
+  /// Delete the Firebase entry by its String Id.
   Future<bool> delete(String? docId) async {
     if (docId == null || docId.trim().isEmpty) {
       return false;
@@ -123,11 +129,14 @@ class FireStoreCollection {
               Transaction),
           timeout: timeout);
 
+  /// Assign an Exception object.
   // ignore: avoid_setters_without_getters
   set ex(Exception ex) => setError(ex);
 
+  /// Assign an Exception object.
   Exception setError(Object ex) => getError(ex);
 
+  /// Return the current Exception object.
   Exception getError([Object? ex]) {
     Exception? e = _ex;
     if (ex == null) {

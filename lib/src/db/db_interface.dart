@@ -151,7 +151,7 @@ abstract class DBInterface {
   ///   'UPDATE Test SET name = ?, value = ? WHERE name = ?',
   ///   ['updated name', '9876', 'some name']);
   /// ```
-  Future<int> rawUpdate(String sqlStmt, [List? arguments]) {
+  Future<int> rawUpdate(String sqlStmt, [List<Object?>? arguments]) {
     throw UnimplementedError();
   }
 

@@ -72,7 +72,7 @@ linter:
     - control_flow_in_finally
     - curly_braces_in_flow_control_structures
     # - diagnostic_describe_all_properties # nice to have for libs but overkill for applications
-    - directives_ordering
+    # - directives_ordering
     - empty_catches
     - empty_constructor_bodies
     - empty_statements
@@ -143,7 +143,7 @@ linter:
     - prefer_typing_uninitialized_variables
     - prefer_void_to_null
     - provide_deprecation_message
-    # - public_member_api_docs # do not use for an application, only a library
+    - public_member_api_docs # do not use for an application, only a library
     - recursive_getters
     - slash_for_doc_comments
     - sort_child_properties_last

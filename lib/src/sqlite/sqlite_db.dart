@@ -32,6 +32,7 @@ typedef Func = Future<bool> Function();
 
 /// SQLite helper class
 abstract class SQLiteDB implements db.DBInterface {
+  /// Supply the database's name and version number.
   SQLiteDB() : _dbError = _DBError() {
     _dbInt = _DBInterface(
         name: name,
@@ -208,18 +209,25 @@ abstract class SQLiteDB implements db.DBInterface {
   /// Return an 'empty' record map
   @override
   Map<String, dynamic> newRec(String table, [Map<String, dynamic>? data]) {
-    final Map<String, dynamic> newRec = {};
+    //
+    Map<String, dynamic> newRec = {};
 
-    newRec.addAll(_dbInt!._newRec[table]!);
+    if (_dbInt!._newRec.isEmpty) {
+      if (data != null) {
+        newRec = data;
+      }
+    } else {
+      //
+      newRec.addAll(_dbInt!._newRec[table]!);
 
-    if (data != null) {
-      data.forEach((key, value) {
-        if (newRec.containsKey(key)) {
-          newRec[key] = value;
-        }
-      });
+      if (data != null) {
+        data.forEach((key, value) {
+          if (newRec.containsKey(key)) {
+            newRec[key] = value;
+          }
+        });
+      }
     }
-
     return newRec;
   }
 

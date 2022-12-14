@@ -1,4 +1,10 @@
 
+## 5.1.0
+ December 13, 2022
+- sdk: '>=2.18.0 <3.0.0'
+- improved newRec() in sqlite_db.dart
+- Deprecated FireStoreDB class removed
+
 ## 5.0.0
 - firebase_database: ^9.0.0 from 7.1.0
 - BREAKING: setPersistenceEnabled() is now synchronous.
