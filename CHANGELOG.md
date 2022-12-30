@@ -1,4 +1,8 @@
 
+## 5.2.0
+ december 30, 2022
+- Future<void> runTxn(   to   Future<T> runTxn<T>(
+
 ## 5.1.0
  December 13, 2022
 - sdk: '>=2.18.0 <3.0.0'

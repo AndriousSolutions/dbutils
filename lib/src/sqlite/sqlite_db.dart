@@ -175,8 +175,8 @@ abstract class SQLiteDB implements db.DBInterface {
   /// Initiate a Database transaction
   /// All sequences are rolled back in one among them fails.
   @override
-  Future<void> runTxn(void Function() func, {bool? exclusive}) =>
-      db!.transaction((txn) async => func(), exclusive: exclusive);
+  Future<T> runTxn<T>(T Function() func, {bool? exclusive}) =>
+      db!.transaction<T>((txn) async => func(), exclusive: exclusive);
 
   /// Save the specified record values to the specified data table
   /// Either parameters may be null
@@ -647,7 +647,7 @@ class _DBInterface {
     rowsUpdated = 0;
     final String keyFld = _keyFields[table]!;
     final keyValue = fields[keyFld];
-    if (table == null) {
+    if (table == null || fields.isEmpty) {
       /// We got nothing.
     } else if (keyValue == null) {
       fields[keyFld] = await db!.insert(table, fields);

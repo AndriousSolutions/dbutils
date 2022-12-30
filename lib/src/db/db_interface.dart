@@ -160,7 +160,7 @@ abstract class DBInterface {
 
   /// Initiate a Database transaction
   /// All sequences are rolled back in one among them fails.
-  Future<void> runTxn(void Function() func) {
+  Future<T> runTxn<T>(T Function() func) {
     throw UnimplementedError();
   }
 
