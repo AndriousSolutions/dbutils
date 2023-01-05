@@ -1,6 +1,10 @@
 
+## 6.0.0
+ January 04, 2023
+- Now returns a record as a Map<String, dynamic> and not a QueryResultSet
+
 ## 5.2.0
- december 30, 2022
+ December 30, 2022
 - Future<void> runTxn(   to   Future<T> runTxn<T>(
 
 ## 5.1.0

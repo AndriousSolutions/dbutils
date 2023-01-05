@@ -233,9 +233,8 @@ abstract class SQLiteDB implements db.DBInterface {
 
   /// Return a specific record by primary key from a specified data table
   @override
-  Future<List<Map<String, dynamic>>> getRecord(String table, int id) async {
-    return getRow(table, id, _dbInt!._fields);
-  }
+  Future<List<Map<String, dynamic>>> getRecord(String table, int id) =>
+      getRow(table, id, _dbInt!._fields);
 
   /// Return the specified fields from a specified record by primary key
   /// from a specified data table
@@ -245,6 +244,8 @@ abstract class SQLiteDB implements db.DBInterface {
     List<Map<String, dynamic>> rec;
     try {
       rec = await _dbInt!.getRec(table, id, fields[table]);
+      // Convert the QueryResultSet to a Map
+      rec = mapQuery(rec);
       _dbError.clear();
     } catch (e) {
       final Exception ex = e is Exception ? e : Exception(e.toString());
@@ -648,7 +649,7 @@ class _DBInterface {
     final String keyFld = _keyFields[table]!;
     final keyValue = fields[keyFld];
     if (table == null || fields.isEmpty) {
-      /// We got nothing.
+      /// We do nothing.
     } else if (keyValue == null) {
       fields[keyFld] = await db!.insert(table, fields);
       rowsUpdated = 1;
