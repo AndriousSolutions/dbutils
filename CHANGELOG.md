@@ -1,4 +1,12 @@
 
+## 6.1.0
+ July 24, 2024
+- Update dependencies
+  cloud_firestore    4.17.5 to 5.0.0   
+  firebase_auth      4.20.0 to 5.0.0   
+  firebase_core      2.32.0 to 3.0.0   
+  firebase_database  10.5.7 to 11.0.0
+
 ## 6.0.0
  January 04, 2023
 - Now returns a record as a Map<String, dynamic> and not a QueryResultSet

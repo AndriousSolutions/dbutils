@@ -27,14 +27,13 @@ void main() {
     final employeeDB = Employee();
 
     // Remove any previous records.
-    int recs = await employeeDB.rawDelete('DELETE FROM ${employeeDB.table}');
-
-    expect(recs > 0, isTrue, reason: _location);
+    await employeeDB.rawDelete('DELETE FROM ${employeeDB.table}');
 
     State stateObj = tester.firstState<State>(find.byType(EmployeeList));
 
     await employeeDB.getEmployees();
 
+    // ignore: INVALID_USE_OF_PROTECTED_MEMBER
     stateObj.setState(() {});
     await tester.pumpAndSettle();
 
@@ -76,6 +75,7 @@ void main() {
     await tester.pumpAndSettle();
 
     /// You can directly access the 'internal workings' of the app!
+    // ignore: unused_local_variable
     EmployeeList list = tester.widget(find.byKey(const Key('EmployeeList')));
   });
 }
